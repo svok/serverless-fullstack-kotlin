@@ -31,7 +31,7 @@ tasks {
 
         outputs.dir("dist")
 
-        args = listOf("run", "build")
+        args = listOf("run", "build", "--base-href=/spa/")
     }
 
     val webdriverUpdate = register("webdriverUpdate", YarnTask::class) {

@@ -33,7 +33,7 @@ package:
 
 functions:
   hello:
-    handler: message.handler
+    handler: com.serverless.Handler
     timeout: 30
     package:
       artifact: ${opt:jar}

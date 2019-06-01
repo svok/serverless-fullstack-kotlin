@@ -51,6 +51,7 @@ tasks {
     }
 
     val slsArgs = arrayOf(
+        "--no-confirm",
         "--stage", stage,
         "--domain", projectDomain,
         "--domain-cert", domainCertificate,
