@@ -31,6 +31,7 @@ tasks {
     }
 
     val copyAngular = task<Copy>("copyAngular") {
+        dependsOn(copyStatic)
         from(project(":front-angular").configurations.getByName("serverlessArtifacts").artifacts.files)
         into("$buildDir/web-static/spa")
     }

@@ -74,7 +74,7 @@ tasks {
             main = "call"
         }
     }
-    
+
     val conf = project.configurations.create("serverlessArtifacts")
     val setArtifacts = create("setArtifacts") {
         dependsOn(ngBuild)
