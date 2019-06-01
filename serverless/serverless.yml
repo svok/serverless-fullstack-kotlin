@@ -23,7 +23,7 @@ custom:
 #    clientSrcPath: client                      # The path to where you want to run the clientCommand
 #    waf: 00000000-0000-0000-0000-000000000000  # ID of the Web Application Firewall. Defaults to not used
     logging:
-      bucket: ${opt:domain}.logs.s3.amazonaws.com
+      bucket: ${opt:domain}.${self:provider.stage}.logs.s3.amazonaws.com
       prefix: fullstack
     minimumProtocolVersion: TLSv1.2_2018
     priceClass: PriceClass_100

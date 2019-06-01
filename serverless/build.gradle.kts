@@ -25,16 +25,39 @@ tasks {
         ?.let { "v${it[1]}${it[2].padStart(2, '0')}" }
         ?: throw GradleException("Cannot parse version. Version must contain groups of numbers: 11.22.33")
 
+    val copyStatic = task<Sync>("copyStatic") {
+        from(project(":front-static").configurations.getByName("serverlessArtifacts").artifacts.files)
+        into("$buildDir/web-static")
+    }
+
+    val copyAngular = task<Copy>("copyAngular") {
+        from(project(":front-angular").configurations.getByName("serverlessArtifacts").artifacts.files)
+        into("$buildDir/web-static/spa")
+    }
+
+    val jarDynamic = project(":front-dynamic").configurations.getByName("serverlessArtifacts").artifacts.files
+    val copyDynamic = task<Copy>("copyDynamic") {
+        from(jarDynamic)
+        into("$buildDir/libs")
+    }
+
+    val copyAll = create("copyAll") {
+        dependsOn(
+            copyStatic,
+            copyAngular,
+            copyDynamic
+        )
+    }
+
     val slsArgs = arrayOf(
         "--stage", stage,
         "--domain", projectDomain,
         "--domain-cert", domainCertificate,
-        "--jar", "some-jar"
+        "--jar", jarDynamic.joinToString(",")
     )
 
-
     val ngBuild = task<YarnTask>("ngBuild") {
-        dependsOn("yarn_install")
+        dependsOn("yarn_install", copyAll)
 
         inputs.files(fileTree("node_modules"))
         inputs.file("serverless.yml")
@@ -46,7 +69,7 @@ tasks {
     }
 
     val ngDeploy = task<YarnTask>("ngDeploy") {
-        dependsOn("yarn_install")
+        dependsOn("yarn_install", copyAll)
 
         inputs.files(fileTree("node_modules"))
         inputs.file("serverless.yml")
@@ -64,4 +87,5 @@ dependencies {
 //    implementation(project(":proj-common"))
     implementation(project(":front-static", configuration = "serverlessArtifacts"))
     implementation(project(":front-angular", configuration = "serverlessArtifacts"))
+    implementation(project(":front-dynamic", configuration = "serverlessArtifacts"))
 }
