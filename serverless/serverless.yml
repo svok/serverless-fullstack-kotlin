@@ -11,7 +11,7 @@ plugins:
 custom:
   fullstack:
     domain: ${self:provider.stage}.${opt:domain}
-    certificate: arn:aws:acm:us-east-1:709565996550:certificate/230046fc-80ce-4cc8-9a6d-5f849f055424 # The ARN for the SSL cert to use form AWS CertificateManager
+    certificate: ${opt:domainCertificate} # The ARN for the SSL cert to use form AWS CertificateManager
     bucketName: ${opt:domain}-${self:provider.stage} # Unique name for the S3 bucket to host the client assets
     distributionFolder: build/web-static       # Path to the client assets to be uploaded to S3
     indexDocument: index.html                  # The index document to use
