@@ -42,11 +42,26 @@ tasks {
 
 //        outputs.dir("dist")
 
-        args = listOf("run", "pack")
+        args = listOf("run", "pack", *slsArgs)
     }
+
+    val ngDeploy = task<YarnTask>("ngDeploy") {
+        dependsOn("yarn_install")
+
+        inputs.files(fileTree("node_modules"))
+        inputs.file("serverless.yml")
+        inputs.file("package.json")
+
+        args = listOf("run", "deploy", *slsArgs)
+    }
+
+    build.get().dependsOn(ngBuild)
+    create("deploy").dependsOn(ngDeploy)
 
 }
 
 dependencies {
 //    implementation(project(":proj-common"))
+    implementation(project(":front-static", configuration = "serverlessArtifacts"))
+    implementation(project(":front-angular", configuration = "serverlessArtifacts"))
 }

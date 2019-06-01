@@ -74,8 +74,15 @@ tasks {
             main = "call"
         }
     }
+    
+    val conf = project.configurations.create("serverlessArtifacts")
+    val setArtifacts = create("setArtifacts") {
+        dependsOn(ngBuild)
+        artifacts.add(conf.name, fileTree("dist/front").dir)
+    }
 
     ngBuild.dependsOn(jar2npm)
+    build.get().dependsOn(setArtifacts)
 }
 
 dependencies {
