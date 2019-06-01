@@ -1,0 +1,13 @@
+**/.git
+**/.idea
+**/.gradle
+**/build
+**/*.iml
+/.idea
+/build
+/.git
+/*.iml
+gradle-local.properties
+
+**/dist
+**/node_modules

@@ -1,0 +1,11 @@
+{
+  "name": "angularfront",
+  "scripts": {
+    "pack": "serverless package",
+    "deploy": "serverless deploy"
+  },
+  "devDependencies": {
+    "serverless": "^1.44.1",
+    "fullstack-serverless": "^0.6.0"
+  }
+}

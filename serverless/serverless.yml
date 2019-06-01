@@ -1,0 +1,44 @@
+service: temedis-com-static
+
+provider:
+  name: aws
+  runtime: java8
+  stage: ${opt:stage}
+
+plugins:
+  - fullstack-serverless
+
+custom:
+  fullstack:
+    domain: ${self:provider.stage}.${opt:domain}
+    certificate: arn:aws:acm:us-east-1:709565996550:certificate/230046fc-80ce-4cc8-9a6d-5f849f055424 # The ARN for the SSL cert to use form AWS CertificateManager
+    bucketName: ${opt:domain}-${self:provider.stage} # Unique name for the S3 bucket to host the client assets
+    distributionFolder: build/web-static       # Path to the client assets to be uploaded to S3
+    indexDocument: index.html                  # The index document to use
+    errorDocument: error.html                  # The error document to use
+    singlePageApp: false                       # If true 403 errors will be rerouted (missing assets) to your root index document to support single page apps like React and Angular where the js framework handles routing
+    compressWebContent: true                   # Use compression when serving web content
+    apiPath: api                               # The path prefix for your API Gateway lambdas. The path for the lambda http event trigger needs to start with this too eg. api/myMethod 
+#    clientCommand: gulp dist                   # Command to generate the client assets. Defaults to doing nothing
+#    clientSrcPath: client                      # The path to where you want to run the clientCommand
+#    waf: 00000000-0000-0000-0000-000000000000  # ID of the Web Application Firewall. Defaults to not used
+    logging:
+      bucket: ${opt:domain}.logs.s3.amazonaws.com
+      prefix: fullstack
+    minimumProtocolVersion: TLSv1.2_2018
+    priceClass: PriceClass_100
+
+package:
+  individually: true
+
+functions:
+  hello:
+    handler: message.handler
+    timeout: 30
+    package:
+      artifact: ${opt:jar}
+    events:
+      - http:
+          path: ${self:custom.fullstack.apiPath}/hello
+          method: get
+          integration: lambda
