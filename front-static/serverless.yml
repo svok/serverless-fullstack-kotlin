@@ -1,0 +1,25 @@
+service: temedis-com-static
+
+provider:
+  name: aws
+  runtime: java8
+  stage: ${opt:stage}
+  versionFunctions: false
+
+plugins:
+  - serverless-finch
+  - serverless-domain-manager
+
+custom:
+  client:
+    bucketName: ${opt:domain}.${self:provider.stage}.static
+    distributionFolder: web
+    indexDocument: index.html
+    errorDocument: error.html
+
+  customDomain:
+    domainName: ${self:provider.stage}.${opt:domain}
+    certificateArn: ${opt:domain-cert}
+    basePath: '/' # This will be prefixed to all routes
+    stage: ${self:provider.stage}
+    createRoute53Record: true

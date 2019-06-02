@@ -7,6 +7,7 @@
 /build
 /.git
 /*.iml
+**/.serverless
 gradle-local.properties
 
 **/dist

@@ -6,12 +6,16 @@ plugins {
     id("com.crowdproj.plugins.jar2npm")
 }
 
-node {
-    download = true
-    workDir = file("${rootProject.buildDir}/node")
-    npmWorkDir = file("${rootProject.buildDir}/node")
-    yarnWorkDir = file("${rootProject.buildDir}/node")
-    nodeModulesDir = file("${project.projectDir}")
+serverless {
+    inputs.files(fileTree("node_modules"))
+    inputs.files(fileTree("web"))
+    inputs.file("serverless.yml")
+    inputs.file("package.json")
+    outputs.dir("dist")
+
+    args = arrayOf(
+        "--ttt"
+    )
 }
 
 tasks {
@@ -75,14 +79,11 @@ tasks {
         }
     }
 
-    val conf = project.configurations.create("serverlessArtifacts")
-    val setArtifacts = create("setArtifacts") {
-        dependsOn(ngBuild)
-        artifacts.add(conf.name, fileTree("dist/front").dir)
-    }
-
     ngBuild.dependsOn(jar2npm)
-    build.get().dependsOn(setArtifacts)
+    getByName("slsBuild").dependsOn("ngBuild")
+    build.get().dependsOn("slsBuild")
+    getByName("slsDeploy").dependsOn("ngBuild")
+    getByName("deploy").dependsOn("slsDeploy")
 }
 
 dependencies {
