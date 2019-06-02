@@ -30,7 +30,7 @@ After all you can build and deploy your project.
 The last stage of deployment takes about 10-20 minutes for creating CloudFront 
 distribution. Be ready to wait for that.
 
-After deployment is done you can go to the web address: https://v001.your-domain.com.
+After deployment is done you can go to the web address: `https://v001.your-domain.com`.
 The prefix v001 is the AWS stage and built on the basis of the version of your project. For example,
 if the versin is 1.23.456 then prefix will be v123. You see the `v` letter is fixed,
 first digit is major number of the version and last two digits are from minor number of that.
