@@ -9,7 +9,6 @@ pluginManagement {
     }
     resolutionStrategy {
         eachPlugin {
-            println("DEP: ${requested.id.id} ${requested.version}")
             when (requested.id.id) {
                 "kotlin-multiplatform" -> useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${requested.version}")
                 "kotlinx-serialization" -> "org.jetbrains.kotlin:kotlin-serialization:${requested.version}"

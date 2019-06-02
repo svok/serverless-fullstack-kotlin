@@ -1198,7 +1198,7 @@ autoprefixer@9.5.1:
     postcss "^7.0.14"
     postcss-value-parser "^3.3.1"
 
-aws-sdk@^2.430.0:
+aws-sdk@^2.177.0, aws-sdk@^2.430.0:
   version "2.466.0"
   resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.466.0.tgz#02d819c5af058e15fd1942296ed3b1def9f4b14d"
   integrity sha512-dWFpz774ONjP1Cb19VkLOfQSVTu5p5/uncZGovAe71NOfPGDSvrQKXOsKcuI1/k4oJyKW9z/GATF8ht8DkDWGg==
@@ -6853,6 +6853,14 @@ serve-static@1.14.1:
     escape-html "~1.0.3"
     parseurl "~1.3.3"
     send "0.17.1"
+
+serverless-domain-manager@^3.2.2:
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/serverless-domain-manager/-/serverless-domain-manager-3.2.2.tgz#35a1497b517f5d6946ecb26fa3e587d4c19c3775"
+  integrity sha512-UIKupK/XDhkTyOm7p8GJrkkFa8XSzfeOyuoNScjZIKyA+w5XIxFOMRtmJG1nFqJ/8zq3YMn9J0Hw/I5EvBrPWQ==
+  dependencies:
+    aws-sdk "^2.177.0"
+    chalk "^2.4.1"
 
 serverless-finch@^2.4.2:
   version "2.4.2"

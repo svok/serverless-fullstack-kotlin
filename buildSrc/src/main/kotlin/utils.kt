@@ -58,10 +58,10 @@ fun Project.serverless(block: ServerlessSettings.() -> Unit = {}) {
             file("$projectDir/node_modules").deleteRecursively()
         }
 
-        getByName("build").dependsOn(slsBuild)
-        create("deploy") {
-            dependsOn(slsDeploy)
-            group = "build"
-        }
+//        getByName("build").dependsOn(slsBuild)
+//        create("deploy") {
+//            dependsOn(slsDeploy)
+//            group = "build"
+//        }
     }
 }

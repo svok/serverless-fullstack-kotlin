@@ -6,6 +6,7 @@
   },
   "devDependencies": {
     "serverless": "^1.44.1",
-    "serverless-finch": "^2.4.2"
+    "@serverless/components": "^0.1.24",
+    "@serverless/website": "^0.1.6"
   }
 }

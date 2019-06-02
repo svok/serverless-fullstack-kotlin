@@ -11,12 +11,20 @@ serverless {
 }
 
 tasks {
-    getByName("build") {
-        dependsOn("slsBuild")
+//    getByName("build") {
+//        dependsOn("slsBuild")
+//    }
+//    getByName("deploy") {
+//        dependsOn("slsDeploy")
+//    }
+
+    val conf = project.configurations.create("serverlessArtifacts")
+    val setArtifacts = create("setArtifacts") {
+        artifacts.add(conf.name, fileTree("web").dir)
     }
-    getByName("deploy") {
-        dependsOn("slsDeploy")
-    }
+
+    getByName("build").dependsOn(setArtifacts)
+
 }
 
 dependencies {

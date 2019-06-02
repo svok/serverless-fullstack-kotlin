@@ -81,9 +81,18 @@ tasks {
 
     ngBuild.dependsOn(jar2npm)
     getByName("slsBuild").dependsOn("ngBuild")
-    build.get().dependsOn("slsBuild")
+//    build.get().dependsOn("slsBuild")
     getByName("slsDeploy").dependsOn("ngBuild")
-    getByName("deploy").dependsOn("slsDeploy")
+//    getByName("deploy").dependsOn("slsDeploy")
+
+    val conf = project.configurations.create("serverlessArtifacts")
+    val setArtifacts = create("setArtifacts") {
+        dependsOn(ngBuild)
+        artifacts.add(conf.name, fileTree("dist/front").dir)
+    }
+
+    build.get().dependsOn(setArtifacts)
+
 }
 
 dependencies {
