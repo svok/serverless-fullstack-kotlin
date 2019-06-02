@@ -46,26 +46,26 @@ custom:
 #        - "*.js":
 #            CacheControl: 'public, max-age=31536000'
 
-  apiCloudFront:
-    domain: ${self:provider.stage}.${opt:domain}
-    certificate: ${opt:domain-cert}
-#    waf: 00000000-0000-0000-0000-000000000000
-    compress: true
-    logging:
-      bucket: ${self:provider.stage}.${opt:domain}.logs.s3.amazonaws.com
-      prefix: fullstack
-    cookies: none
-    headers:
-      - x-api-key
-    querystring:
-      - page
-      - per_page
-    priceClass: PriceClass_100
-    minimumProtocolVersion: TLSv1
+#  apiCloudFront:
+#    domain: ${self:custom.siteName}
+#    certificate: ${opt:domain-cert}
+##    waf: 00000000-0000-0000-0000-000000000000
+#    compress: true
+#    logging:
+#      bucket: ${self:provider.stage}.${opt:domain}.logs.s3.amazonaws.com
+#      prefix: fullstack
+#    cookies: none
+#    headers:
+#      - x-api-key
+#    querystring:
+#      - page
+#      - per_page
+#    priceClass: PriceClass_100
+#    minimumProtocolVersion: TLSv1
 
 resources:
   Resources:
-    AssetsBucket:
+    StaticSiteBucket:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:custom.siteName}-static
@@ -74,7 +74,7 @@ resources:
           IndexDocument: index.html
           ErrorDocument: error.html
 
-    OtherSiteBucket:
+    SpaSiteBucket:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:custom.siteName}-spa
@@ -82,3 +82,329 @@ resources:
         WebsiteConfiguration:
           IndexDocument: index.html
           ErrorDocument: index.html
+
+    WebsiteDistribution:
+      Type: 'AWS::CloudFront::Distribution'
+      Properties:
+        DistributionConfig:
+          DefaultCacheBehavior:
+            TargetOriginId: 'StaticSiteBucketOrigin'
+            ViewerProtocolPolicy: 'redirect-to-https'
+            DefaultTTL: 600 # ten minutes
+            MaxTTL: 600 # ten minutes
+            Compress: true
+            ForwardedValues:
+              QueryString: false
+              Cookies:
+                Forward: 'none'
+          DefaultRootObject: 'index.html'
+          Enabled: true
+          PriceClass: 'PriceClass_100'
+          HttpVersion: 'http2'
+          ViewerCertificate:
+            ACMCertificateArn: ${opt:domain-cert}
+            SSLSupportMethod: "sni-only"
+            MinimumProtocolVersion: TLSv1
+            Certificate: ${opt:domain-cert}
+            CertificateSource: acm
+          Aliases:
+            Items:
+              - ${self:custom.siteName}
+          Origins:
+            -
+              Id: 'StaticSiteBucketOrigin'
+              DomainName: { 'Fn::GetAtt': [ 'StaticSiteBucket', 'DomainName' ] }
+              S3OriginConfig: {}
+            -
+              Id: 'SpaSiteBucketOrigin'
+              DomainName: { 'Fn::GetAtt': [ 'SpaSiteBucket', 'DomainName' ] }
+              OriginPath: ""
+              S3OriginConfig: {}
+
+#    Id: E31U01BBJKRUPD
+#    ARN: "arn:aws:cloudfront::709565996550:distribution/E31U01BBJKRUPD"
+#    Status: Deployed
+#    LastModifiedTime: "2019-06-02T15:58:30.533Z"
+#    DomainName: "d25532ay3ylpty.cloudfront.net"
+#    Aliases:
+#      Quantity: 1
+#      Items:
+#        -
+#    "v002.temedis.com"
+#    Origins:
+#      Quantity: 3
+#      Items:
+#        -
+#    Id: "S3-v002.temedis.com-static"
+#      DomainName: "v002.temedis.com-static.s3.amazonaws.com"
+#      OriginPath: ""
+#      CustomHeaders:
+#        Quantity: 0
+#      S3OriginConfig:
+#        OriginAccessIdentity: ""
+#      -
+#    Id: "S3-v002.temedis.com-spa"
+#      DomainName: "v002.temedis.com-spa.s3.amazonaws.com"
+#      OriginPath: ""
+#      CustomHeaders:
+#        Quantity: 0
+#      S3OriginConfig:
+#        OriginAccessIdentity: ""
+#      -
+#    Id: ApiGateway
+#      DomainName: "tf8y299uuc.execute-api.us-east-1.amazonaws.com"
+#      OriginPath: "/v002"
+#      CustomHeaders:
+#        Quantity: 0
+#      CustomOriginConfig:
+#        HTTPPort: 80
+#        HTTPSPort: 443
+#        OriginProtocolPolicy: "https-only"
+#        OriginSslProtocols:
+#          Quantity: 3
+#          Items:
+#            -
+#    TLSv1
+#    -
+#    "TLSv1.1"
+#    -
+#    "TLSv1.2"
+#    OriginReadTimeout: 30
+#    OriginKeepaliveTimeout: 5
+#    DefaultCacheBehavior:
+#      TargetOriginId: "S3-v002.temedis.com-static"
+#      ForwardedValues:
+#        QueryString: false
+#        Cookies:
+#          Forward: none
+#        Headers:
+#          Quantity: 0
+#        QueryStringCacheKeys:
+#          Quantity: 0
+#      TrustedSigners:
+#        Enabled: false
+#        Quantity: 0
+#      ViewerProtocolPolicy: "redirect-to-https"
+#      MinTTL: 0
+#      AllowedMethods:
+#        Quantity: 2
+#        Items:
+#          -
+#    HEAD
+#    -
+#    GET
+#    CachedMethods:
+#      Quantity: 2
+#      Items:
+#        -
+#    HEAD
+#    -
+#    GET
+#    SmoothStreaming: false
+#    DefaultTTL: 0
+#    MaxTTL: 31536000
+#    Compress: true
+#    LambdaFunctionAssociations:
+#      Quantity: 0
+#    CacheBehaviors:
+#      Quantity: 3
+#      Items:
+#        -
+#    PathPattern: "/api/*"
+#      TargetOriginId: ApiGateway
+#      ForwardedValues:
+#        QueryString: false
+#        Cookies:
+#          Forward: none
+#        Headers:
+#          Quantity: 0
+#        QueryStringCacheKeys:
+#          Quantity: 0
+#      TrustedSigners:
+#        Enabled: false
+#        Quantity: 0
+#      ViewerProtocolPolicy: "redirect-to-https"
+#      MinTTL: 0
+#      AllowedMethods:
+#        Quantity: 2
+#        Items:
+#          -
+#    HEAD
+#    -
+#    GET
+#    CachedMethods:
+#      Quantity: 2
+#      Items:
+#        -
+#    HEAD
+#    -
+#    GET
+#    SmoothStreaming: false
+#    DefaultTTL: 86400
+#    MaxTTL: 31536000
+#    Compress: false
+#    LambdaFunctionAssociations:
+#      Quantity: 0
+#    -
+#    PathPattern: "/spa/*"
+#      TargetOriginId: "S3-v002.temedis.com-spa"
+#      ForwardedValues:
+#        QueryString: false
+#        Cookies:
+#          Forward: none
+#        Headers:
+#          Quantity: 0
+#        QueryStringCacheKeys:
+#          Quantity: 0
+#      TrustedSigners:
+#        Enabled: false
+#        Quantity: 0
+#      ViewerProtocolPolicy: "allow-all"
+#      MinTTL: 0
+#      AllowedMethods:
+#        Quantity: 2
+#        Items:
+#          -
+#    HEAD
+#    -
+#    GET
+#    CachedMethods:
+#      Quantity: 2
+#      Items:
+#        -
+#    HEAD
+#    -
+#    GET
+#    SmoothStreaming: false
+#    DefaultTTL: 86400
+#    MaxTTL: 31536000
+#    Compress: false
+#    LambdaFunctionAssociations:
+#      Quantity: 0
+#    -
+#    PathPattern: "/spa"
+#      TargetOriginId: "S3-v002.temedis.com-spa"
+#      ForwardedValues:
+#        QueryString: false
+#        Cookies:
+#          Forward: none
+#        Headers:
+#          Quantity: 0
+#        QueryStringCacheKeys:
+#          Quantity: 0
+#      TrustedSigners:
+#        Enabled: false
+#        Quantity: 0
+#      ViewerProtocolPolicy: "allow-all"
+#      MinTTL: 0
+#      AllowedMethods:
+#        Quantity: 2
+#        Items:
+#          -
+#    HEAD
+#    -
+#    GET
+#    CachedMethods:
+#      Quantity: 2
+#      Items:
+#        -
+#    HEAD
+#    -
+#    GET
+#    SmoothStreaming: false
+#    DefaultTTL: 86400
+#    MaxTTL: 31536000
+#    Compress: false
+#    LambdaFunctionAssociations:
+#      Quantity: 0
+#    CustomErrorResponses:
+#      Quantity: 0
+#    Comment: "Serverless Managed v002-com-temedis"
+#    PriceClass: PriceClass_100
+#    Enabled: true
+#    ViewerCertificate:
+#      ACMCertificateArn: "arn:aws:acm:us-east-1:709565996550:certificate/230046fc-80ce-4cc8-9a6d-5f849f055424"
+#      SSLSupportMethod: "sni-only"
+#      MinimumProtocolVersion: TLSv1
+#      Certificate: "arn:aws:acm:us-east-1:709565996550:certificate/230046fc-80ce-4cc8-9a6d-5f849f055424"
+#      CertificateSource: acm
+#    Restrictions:
+#      GeoRestriction:
+#        RestrictionType: none
+#        Quantity: 0
+#    WebACLId: ""
+#    HttpVersion: HTTP2
+#    IsIPV6Enabled: true
+
+
+#resources:
+#  Mappings: ${file(resources/mappings.yml)}
+#  Resources:
+#    ingestBucket:
+#      Type: AWS::S3::Bucket
+#      Properties:
+#        BucketName: ${file(./config.js):${opt:stage}.S3_PLAYER_SOURCE_BUCKET}
+#        AccessControl: Private
+#        CorsConfiguration:
+#          CorsRules:
+#            - AllowedMethods:
+#                - GET
+#                - POST
+#                - PUT
+#                - HEAD
+#              AllowedOrigins:
+#                - "*"
+#              AllowedHeaders:
+#                - "*"
+#    exportBucket:
+#      Type: AWS::S3::Bucket
+#      Properties:
+#        BucketName: ${file(./config.js):${opt:stage}.S3_EXPORT_BUCKET}
+#        AccessControl: Private
+#        CorsConfiguration:
+#          CorsRules:
+#            - AllowedMethods:
+#                - GET
+#                - POST
+#                - PUT
+#                - HEAD
+#              AllowedOrigins:
+#                - "*"
+#              AllowedHeaders:
+#                - "*"
+#    WebSite:
+#      Type: "AWS::S3::Bucket"
+#      Properties:
+#        WebsiteConfiguration:
+#          ErrorDocument: index.html
+#          IndexDocument: index.html
+#    DnsRecords: ${file(resources/${opt:stage}-dns.yml)}
+#    CDN:
+#      Type: "AWS::CloudFront::Distribution"
+#      Properties:
+#        DistributionConfig:
+#          ViewerCertificate:
+#            AcmCertificateArn: ${file(./config.js):${opt:stage}.CERTIFICATE_ARN}
+#            SslSupportMethod: sni-only
+#          Enabled: true
+#          HttpVersion: http2
+#          Aliases: ${file(./config.js):${opt:stage}.DOMAIN_ALIASES}
+#          DefaultRootObject: index.html
+#          Origins:
+#            - DomainName: {"Fn::Join": ["", [{Ref: WebSite}, ".", {"Fn::FindInMap": [RegionMap, {Ref: "AWS::Region"}, websiteendpoint]}]]}
+#              Id: S3Origin
+#              CustomOriginConfig:
+#                HTTPPort: 80
+#                HTTPSPort: 443
+#                OriginProtocolPolicy: http-only
+#          DefaultCacheBehavior:
+#            ViewerProtocolPolicy: allow-all
+#            TargetOriginId: S3Origin
+#            AllowedMethods:
+#              - GET
+#              - HEAD
+#            Compress: true
+#            DefaultTTL: 30
+#            MinTTL: 10
+#            ForwardedValues:
+#              QueryString: true
