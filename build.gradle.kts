@@ -39,3 +39,10 @@ subprojects {
     }
 }
 
+tasks {
+    create("clean") {
+        file("$projectDir/dist").deleteRecursively()
+        file(buildDir).deleteRecursively()
+        file("$projectDir/node_modules").deleteRecursively()
+    }
+}

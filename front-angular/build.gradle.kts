@@ -8,9 +8,9 @@ plugins {
 
 node {
     download = true
-    workDir = file("${project.buildDir}/node")
-    npmWorkDir = file("${project.buildDir}/node")
-    yarnWorkDir = file("${project.buildDir}/node")
+    workDir = file("${rootProject.buildDir}/node")
+    npmWorkDir = file("${rootProject.buildDir}/node")
+    yarnWorkDir = file("${rootProject.buildDir}/node")
     nodeModulesDir = file("${project.projectDir}")
 }
 
@@ -49,8 +49,8 @@ tasks {
     }
 
     clean.get().doLast {
-        println("Delete dist and node_modules")
         file("$projectDir/dist").deleteRecursively()
+        file(buildDir).deleteRecursively()
         file("$projectDir/node_modules").deleteRecursively()
     }
 

@@ -7,9 +7,9 @@ plugins {
 
 node {
     download = true
-    workDir = file("${project.buildDir}/node")
-    npmWorkDir = file("${project.buildDir}/node")
-    yarnWorkDir = file("${project.buildDir}/node")
+    workDir = file("${rootProject.buildDir}/node")
+    npmWorkDir = file("${rootProject.buildDir}/node")
+    yarnWorkDir = file("${rootProject.buildDir}/node")
     nodeModulesDir = file("${project.projectDir}")
 }
 
@@ -80,8 +80,17 @@ tasks {
         args = listOf("run", "deploy", *slsArgs)
     }
 
+    clean.get().doLast {
+        file("$projectDir/dist").deleteRecursively()
+        file(buildDir).deleteRecursively()
+        file("$projectDir/node_modules").deleteRecursively()
+    }
+
     build.get().dependsOn(ngBuild)
-    create("deploy").dependsOn(ngDeploy)
+    create("deploy") {
+        dependsOn(ngDeploy)
+        group = "build" 
+    }
 
 }
 
