@@ -18,6 +18,8 @@ Then you need to specify your settings in the `gradle-local.properties` file.
 ```properties
 projectGroup=com.you-domain.your-group
 projectDomain=your-domain.com
+projectStage=v001
+projectService=com-domain-your
 projectVersion=0.1.2
 
 domainCertificate=arn:aws:acm:us-east-1:000000000000:certificate/00000000-0000-0000-0000-000000000000
@@ -31,12 +33,7 @@ The last stage of deployment takes about 10-20 minutes for creating CloudFront
 distribution. Be ready to wait for that.
 
 After deployment is done you can go to the web address: `https://v001.your-domain.com`.
-The prefix v001 is the AWS stage and built on the basis of the version of your project. For example,
-if the versin is 1.23.456 then prefix will be v123. You see the `v` letter is fixed,
-first digit is major number of the version and last two digits are from minor number of that.
-
-Such a versioning allows you to have multiple versions for your web project, including
-those for different API versions.
+The prefix v001 is your project stage.
 
 To attach some of your web-site versions you need to go to your CloudFront settings and do following.
 1. Be sure your certificate includes both `v001.your-domain.com` and `your-domain.com`. Check that in your 
