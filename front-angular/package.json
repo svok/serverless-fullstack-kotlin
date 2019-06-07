@@ -2,6 +2,8 @@
   "name": "front",
   "version": "0.0.0",
   "scripts": {
+    "pack": "serverless package",
+    "deploy": "serverless deploy",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
@@ -24,6 +26,9 @@
     "zone.js": "~0.9.1"
   },
   "devDependencies": {
+    "serverless": "^1.44.1",
+    "serverless-finch": "^2.4.2",
+    "serverless-domain-manager": "^3.2.2",
     "@angular-devkit/build-angular": "~0.800.0",
     "@angular/cli": "~8.0.1",
     "@angular/compiler-cli": "~8.0.0",

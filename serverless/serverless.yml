@@ -1,44 +1,104 @@
-service: temedis-com-static
+service: ${opt:service}
+
+plugins:
+  - serverless-s3-sync
 
 provider:
   name: aws
   runtime: java8
   stage: ${opt:stage}
-
-plugins:
-  - fullstack-serverless
-
-custom:
-  fullstack:
-    domain: ${self:provider.stage}.${opt:domain}
-    certificate: ${opt:domain-cert} # The ARN for the SSL cert to use form AWS CertificateManager
-    bucketName: ${opt:domain}-${self:provider.stage} # Unique name for the S3 bucket to host the client assets
-    distributionFolder: build/web-static       # Path to the client assets to be uploaded to S3
-    indexDocument: index.html                  # The index document to use
-    errorDocument: error.html                  # The error document to use
-    singlePageApp: false                       # If true 403 errors will be rerouted (missing assets) to your root index document to support single page apps like React and Angular where the js framework handles routing
-    compressWebContent: true                   # Use compression when serving web content
-    apiPath: api                               # The path prefix for your API Gateway lambdas. The path for the lambda http event trigger needs to start with this too eg. api/myMethod 
-#    clientCommand: gulp dist                   # Command to generate the client assets. Defaults to doing nothing
-#    clientSrcPath: client                      # The path to where you want to run the clientCommand
-#    waf: 00000000-0000-0000-0000-000000000000  # ID of the Web Application Firewall. Defaults to not used
-    logging:
-      bucket: ${opt:domain}.${self:provider.stage}.logs.s3.amazonaws.com
-      prefix: fullstack
-    minimumProtocolVersion: TLSv1.2_2018
-    priceClass: PriceClass_100
+  versionFunctions: false
 
 package:
-  individually: true
+  artifact: ${opt:jar}
 
 functions:
   hello:
     handler: com.serverless.Handler
-    timeout: 30
-    package:
-      artifact: ${opt:jar}
     events:
       - http:
-          path: ${self:custom.fullstack.apiPath}/hello
+          path: api/hello
           method: get
-          integration: lambda
+custom:
+  siteName: ${self:provider.stage}.${opt:domain}
+  s3Sync:
+    - bucketName: ${self:custom.siteName}-static
+      localDir: build/web-static
+      acl: public-read # optional
+      followSymlinks: true # optional
+      defaultContentType: text/html # optional
+#      params: # optional
+#        - index.html:
+#            CacheControl: 'no-cache'
+#        - "*.js":
+#            CacheControl: 'public, max-age=31536000'
+
+    - bucketName: ${self:custom.siteName}-spa
+      bucketPrefix: spa/ # optional
+      localDir: build/web-spa
+      acl: public-read # optional
+      followSymlinks: true # optional
+      defaultContentType: text/html # optional
+
+    - bucketName: ${self:custom.siteName}-logs
+      followSymlinks: true # optional
+
+resources:
+  Resources:
+    StaticSiteBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.siteName}-static
+        AccessControl: PublicRead
+        WebsiteConfiguration:
+          IndexDocument: index.html
+          ErrorDocument: error.html
+
+    SpaSiteBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.siteName}-spa
+        AccessControl: PublicRead
+        WebsiteConfiguration:
+          IndexDocument: index.html
+          ErrorDocument: index.html
+
+    WebsiteDistribution:
+      Type: 'AWS::CloudFront::Distribution'
+      Properties:
+        DistributionConfig:
+          DefaultCacheBehavior:
+            TargetOriginId: 'StaticSiteBucketOrigin'
+            ViewerProtocolPolicy: 'redirect-to-https'
+            DefaultTTL: 600 # ten minutes
+            MaxTTL: 600 # ten minutes
+            Compress: true
+            ForwardedValues:
+              QueryString: false
+              Cookies:
+                Forward: 'none'
+          DefaultRootObject: 'index.html'
+          Enabled: true
+          PriceClass: 'PriceClass_100'
+          HttpVersion: 'http2'
+          ViewerCertificate:
+            AcmCertificateArn: >-
+              ${opt:domain-cert}
+            SslSupportMethod: sni-only
+            MinimumProtocolVersion: TLSv1.2_2018
+          Aliases:
+            - ${self:custom.siteName}
+#          Logging:
+#            IncludeCookies: 'false'
+#            Bucket: ${self:custom.siteName}-logs.s3.amazonaws.com
+#            Prefix: fullstack
+          Origins:
+            -
+              Id: 'StaticSiteBucketOrigin'
+              DomainName: { 'Fn::GetAtt': [ 'StaticSiteBucket', 'DomainName' ] }
+              S3OriginConfig: {}
+            -
+              Id: 'SpaSiteBucketOrigin'
+              DomainName: { 'Fn::GetAtt': [ 'SpaSiteBucket', 'DomainName' ] }
+              OriginPath: ""
+              S3OriginConfig: {}

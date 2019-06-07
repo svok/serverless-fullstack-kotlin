@@ -16,28 +16,23 @@ node {
 tasks {
 
     val projectDomain: String by project
+    val projectStage: String by project
+    val projectService: String by project
     val domainCertificate: String by project
-
-    val stageVersionRegex = Regex("^(\\d+)\\.(\\d+)")
-    val stage = stageVersionRegex
-        .find(rootProject.version.toString())
-        ?.groupValues
-        ?.let { "v${it[1]}${it[2].padStart(2, '0')}" }
-        ?: throw GradleException("Cannot parse version. Version must contain groups of numbers: 11.22.33")
 
     val copyStatic = task<Sync>("copyStatic") {
         from(project(":front-static").configurations.getByName("serverlessArtifacts").artifacts.files)
         into("$buildDir/web-static")
     }
 
-    val copyAngular = task<Copy>("copyAngular") {
+    val copyAngular = task<Sync>("copyAngular") {
         dependsOn(copyStatic)
         from(project(":front-angular").configurations.getByName("serverlessArtifacts").artifacts.files)
-        into("$buildDir/web-static/spa")
+        into("$buildDir/web-spa")
     }
 
     val jarDynamic = project(":front-dynamic").configurations.getByName("serverlessArtifacts").artifacts.files
-    val copyDynamic = task<Copy>("copyDynamic") {
+    val copyDynamic = task<Sync>("copyDynamic") {
         from(jarDynamic)
         into("$buildDir/libs")
     }
@@ -52,10 +47,11 @@ tasks {
 
     val slsArgs = arrayOf(
         "--no-confirm",
-        "--stage", stage,
+        "--stage", projectStage,
         "--domain", projectDomain,
         "--domain-cert", domainCertificate,
-        "--jar", jarDynamic.joinToString(",")
+        "--jar", jarDynamic.joinToString(","),
+        "--service", projectService
     )
 
     val ngBuild = task<YarnTask>("ngBuild") {
@@ -89,7 +85,7 @@ tasks {
     build.get().dependsOn(ngBuild)
     create("deploy") {
         dependsOn(ngDeploy)
-        group = "build" 
+        group = "build"
     }
 
 }
