@@ -5,13 +5,7 @@ plugins {
     id("com.moowork.node")
 }
 
-node {
-    download = true
-    workDir = file("${rootProject.buildDir}/node")
-    npmWorkDir = file("${rootProject.buildDir}/node")
-    yarnWorkDir = file("${rootProject.buildDir}/node")
-    nodeModulesDir = file("${project.projectDir}")
-}
+nodeSetup()
 
 tasks {
 
@@ -72,6 +66,8 @@ tasks {
         inputs.files(fileTree("node_modules"))
         inputs.file("serverless.yml")
         inputs.file("package.json")
+
+        setEnvironment(mapOf("SLS_DEBUG" to "*"))
 
         args = listOf("run", "deploy", *slsArgs)
     }

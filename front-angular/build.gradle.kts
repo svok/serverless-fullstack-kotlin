@@ -1,3 +1,4 @@
+import com.moowork.gradle.node.NodeExtension
 import com.moowork.gradle.node.yarn.YarnTask
 
 plugins {
@@ -6,18 +7,7 @@ plugins {
     id("com.crowdproj.plugins.jar2npm")
 }
 
-serverless {
-    inputs.files(fileTree("node_modules"))
-    inputs.files(fileTree("web"))
-    inputs.file("serverless.yml")
-    inputs.file("package.json")
-    outputs.dir("dist")
-
-    args = arrayOf(
-        "--ttt"
-    )
-}
-
+nodeSetup()
 tasks {
 
     withType<Jar> {
@@ -52,7 +42,7 @@ tasks {
         args = listOf("run", "start")
     }
 
-    clean.get().doLast {
+    getByName("clean").doLast {
         file("$projectDir/dist").deleteRecursively()
         file(buildDir).deleteRecursively()
         file("$projectDir/node_modules").deleteRecursively()
@@ -80,10 +70,6 @@ tasks {
     }
 
     ngBuild.dependsOn(jar2npm)
-    getByName("slsBuild").dependsOn("ngBuild")
-//    build.get().dependsOn("slsBuild")
-    getByName("slsDeploy").dependsOn("ngBuild")
-//    getByName("deploy").dependsOn("slsDeploy")
 
     val conf = project.configurations.create("serverlessArtifacts")
     val setArtifacts = create("setArtifacts") {

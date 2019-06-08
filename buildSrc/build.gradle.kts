@@ -4,12 +4,14 @@ plugins {
 
 repositories {
     jcenter()
+    gradlePluginPortal()
 }
 
 dependencies {
         implementation(gradleApi())
         implementation(kotlin("stdlib-jdk8"))
         implementation("com.moowork.gradle:gradle-node-plugin:1.3.1")
+        implementation("com.crowdproj.plugins:jar2npm-plugin:1.0.1")
         implementation(kotlin("gradle-plugin"))
 
 //        testImplementation(kotlin("test"))

@@ -12,7 +12,6 @@ pluginManagement {
             when (requested.id.id) {
                 "kotlin-multiplatform" -> useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${requested.version}")
                 "kotlinx-serialization" -> "org.jetbrains.kotlin:kotlin-serialization:${requested.version}"
-                "com.crowdproj.plugins.jar2npm" -> useModule("com.crowdproj.plugins:jar2npm-plugin:${requested.version}")
             }
         }
     }

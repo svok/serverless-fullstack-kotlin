@@ -4,7 +4,7 @@ This is a template project to build a serverless project utilizing all of:
 1. Kotlin multiplatform libraries to share code between backend and frontend.
 1. AWS lambda functions to achieve high scalability.
 1. Frontend having static pages and Angular single page application.
-1. [Serverles Framework](https://serverless.com/) to automate deployment.
+1. [Serverles Framework](https://serverlessp.com/) to automate deployment.
 
 ## Installation
 

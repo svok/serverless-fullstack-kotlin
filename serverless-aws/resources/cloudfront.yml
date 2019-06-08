@@ -1,0 +1,111 @@
+Resources:
+  WebsiteDistribution:
+    Type: 'AWS::CloudFront::Distribution'
+    Properties:
+      DistributionConfig:
+        DefaultCacheBehavior:
+          TargetOriginId: 'StaticSiteBucketOrigin'
+          ViewerProtocolPolicy: 'redirect-to-https'
+          DefaultTTL: 600 # ten minutes
+          MaxTTL: 600 # ten minutes
+          Compress: true
+          ForwardedValues:
+            QueryString: false
+            Cookies:
+              Forward: 'none'
+        CacheBehaviors:
+          -
+            TargetOriginId: 'SpaSiteBucketOrigin'
+            #              AllowedMethods:
+            #                - DELETE
+            #                - GET
+            #                - HEAD
+            #                - OPTIONS
+            #                - PATCH
+            #                - POST
+            #                - PUT
+            #              CachedMethods:
+            #                - HEAD
+            #                - GET
+            ForwardedValues:
+              QueryString: true
+              Headers:
+                - Accept
+                - Referer
+                - Authorization
+                - Content-Type
+              Cookies:
+                Forward: all
+            MinTTL: '0'
+            DefaultTTL: '0'
+            ViewerProtocolPolicy: https-only
+            PathPattern: spa/*
+
+  #        - TargetOriginId: ApiGateway
+  #          AllowedMethods:
+  #            - DELETE
+  #            - GET
+  #            - HEAD
+  #            - OPTIONS
+  #            - PATCH
+  #            - POST
+  #            - PUT
+  #          CachedMethods:
+  #            - HEAD
+  #            - GET
+  #          ForwardedValues:
+  #            QueryString: true
+  #            Headers:
+  #              - Accept
+  #              - Referer
+  #              - Authorization
+  #              - Content-Type
+  #            Cookies:
+  #              Forward: all
+  #          MinTTL: '0'
+  #          DefaultTTL: '0'
+  #          ViewerProtocolPolicy: https-only
+  #          PathPattern: api/*
+
+        DefaultRootObject: 'index.html'
+        Enabled: true
+        PriceClass: 'PriceClass_100'
+        HttpVersion: 'http2'
+        ViewerCertificate:
+          AcmCertificateArn: >-
+            ${opt:domain-cert}
+          SslSupportMethod: sni-only
+          MinimumProtocolVersion: TLSv1.2_2018
+        Aliases:
+          - ${self:custom.siteName}
+        #          Logging:
+        #            IncludeCookies: 'false'
+        #            Bucket: ${self:custom.siteName}-logs.s3.amazonaws.com
+        #            Prefix: fullstack
+        Origins:
+          -
+            Id: 'StaticSiteBucketOrigin'
+            DomainName: { 'Fn::GetAtt': [ 'StaticSiteBucket', 'DomainName' ] }
+            S3OriginConfig: {}
+          -
+            Id: 'SpaSiteBucketOrigin'
+            DomainName: { 'Fn::GetAtt': [ 'SpaSiteBucket', 'DomainName' ] }
+            OriginPath: ""
+            S3OriginConfig: {}
+  #        -
+  #          Id: ApiGateway
+  #          DomainName: !Join
+  #            - ''
+  #            - - !Ref ApiGatewayRestApi
+  #              - .execute-api.
+  #              - !Ref 'AWS::Region'
+  #              - .amazonaws.com
+  #          CustomOriginConfig:
+  #            HTTPPort: '80'
+  #            HTTPSPort: '443'
+  #            OriginProtocolPolicy: https-only
+  #            OriginSSLProtocols:
+  #              - TLSv1
+  #              - TLSv1.1
+  #              - TLSv1.2
+  #          OriginPath: /v000
