@@ -1,9 +1,5 @@
 service: ${opt:service}
 
-plugins:
-#  - serverless-s3-sync
-#  - serverless-single-page-app-plugin
-
 provider:
   name: aws
   runtime: java8
@@ -22,54 +18,9 @@ functions:
           method: get
 custom:
   siteName: ${self:provider.stage}.${opt:domain}
-#  s3Bucket:
-#    - ${self:custom.siteName}-static
-#    - ${self:custom.siteName}-spa
-#    - ${self:custom.siteName}-logs
-
-#  s3Sync:
-#    - bucketName: ${self:custom.siteName}-static
-#      localDir: build/web-static
-#      acl: public-read # optional
-#      followSymlinks: true # optional
-#      defaultContentType: text/html # optional
-#      params: # optional
-#        - index.html:
-#            CacheControl: 'no-cache'
-#        - "*.js":
-#            CacheControl: 'public, max-age=31536000'
-
-#    - bucketName: ${self:custom.siteName}-spa
-#      bucketPrefix: spa/ # optional
-#      localDir: build/web-spa
-#      acl: public-read # optional
-#      followSymlinks: true # optional
-#      defaultContentType: text/html # optional
-#
-#    - bucketName: ${self:custom.siteName}-logs
-#      followSymlinks: true # optional
 
 resources:
   - ${file(resources/bucket-website-static.yml)}
   - ${file(resources/bucket-website-spa.yml)}
   - ${file(resources/bucket-logs.yml)}
   - ${file(resources/cloudfront.yml)}
-
-#    StaticSiteBucket:
-#      Type: AWS::S3::Bucket
-#      Properties:
-#        BucketName: ${self:custom.siteName}-static
-#        AccessControl: PublicRead
-#        WebsiteConfiguration:
-#          IndexDocument: index.html
-#          ErrorDocument: error.html
-
-#    SpaSiteBucket:
-#      Type: AWS::S3::Bucket
-#      Properties:
-#        BucketName: ${self:custom.siteName}-spa
-#        AccessControl: PublicRead
-#        WebsiteConfiguration:
-#          IndexDocument: index.html
-#          ErrorDocument: index.html
-

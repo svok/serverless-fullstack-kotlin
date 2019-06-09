@@ -16,17 +16,39 @@ Resources:
         CacheBehaviors:
           -
             TargetOriginId: 'SpaSiteBucketOrigin'
-            #              AllowedMethods:
-            #                - DELETE
-            #                - GET
-            #                - HEAD
-            #                - OPTIONS
-            #                - PATCH
-            #                - POST
-            #                - PUT
-            #              CachedMethods:
-            #                - HEAD
-            #                - GET
+            AllowedMethods:
+              - GET
+              - HEAD
+            CachedMethods:
+              - HEAD
+              - GET
+            ForwardedValues:
+              QueryString: true
+#              Headers:
+#                - Accept
+#                - Referer
+#                - Authorization
+#                - Content-Type
+              Cookies:
+                Forward: none
+#                Forward: all
+            MinTTL: '0'
+            DefaultTTL: '0'
+            ViewerProtocolPolicy: redirect-to-https
+            PathPattern: spa/*
+
+          - TargetOriginId: ApiGateway
+            AllowedMethods:
+              - DELETE
+              - GET
+              - HEAD
+              - OPTIONS
+              - PATCH
+              - POST
+              - PUT
+            CachedMethods:
+              - HEAD
+              - GET
             ForwardedValues:
               QueryString: true
               Headers:
@@ -39,33 +61,7 @@ Resources:
             MinTTL: '0'
             DefaultTTL: '0'
             ViewerProtocolPolicy: https-only
-            PathPattern: spa/*
-
-  #        - TargetOriginId: ApiGateway
-  #          AllowedMethods:
-  #            - DELETE
-  #            - GET
-  #            - HEAD
-  #            - OPTIONS
-  #            - PATCH
-  #            - POST
-  #            - PUT
-  #          CachedMethods:
-  #            - HEAD
-  #            - GET
-  #          ForwardedValues:
-  #            QueryString: true
-  #            Headers:
-  #              - Accept
-  #              - Referer
-  #              - Authorization
-  #              - Content-Type
-  #            Cookies:
-  #              Forward: all
-  #          MinTTL: '0'
-  #          DefaultTTL: '0'
-  #          ViewerProtocolPolicy: https-only
-  #          PathPattern: api/*
+            PathPattern: api/*
 
         DefaultRootObject: 'index.html'
         Enabled: true
@@ -90,22 +86,22 @@ Resources:
           -
             Id: 'SpaSiteBucketOrigin'
             DomainName: { 'Fn::GetAtt': [ 'SpaSiteBucket', 'DomainName' ] }
-            OriginPath: ""
+#            OriginPath: ""
             S3OriginConfig: {}
-  #        -
-  #          Id: ApiGateway
-  #          DomainName: !Join
-  #            - ''
-  #            - - !Ref ApiGatewayRestApi
-  #              - .execute-api.
-  #              - !Ref 'AWS::Region'
-  #              - .amazonaws.com
-  #          CustomOriginConfig:
-  #            HTTPPort: '80'
-  #            HTTPSPort: '443'
-  #            OriginProtocolPolicy: https-only
-  #            OriginSSLProtocols:
-  #              - TLSv1
-  #              - TLSv1.1
-  #              - TLSv1.2
-  #          OriginPath: /v000
+          -
+            Id: ApiGateway
+            DomainName: !Join
+              - ''
+              - - !Ref ApiGatewayRestApi
+                - .execute-api.
+                - !Ref 'AWS::Region'
+                - .amazonaws.com
+            CustomOriginConfig:
+              HTTPPort: '80'
+              HTTPSPort: '443'
+              OriginProtocolPolicy: https-only
+              OriginSSLProtocols:
+                - TLSv1
+                - TLSv1.1
+                - TLSv1.2
+            OriginPath: /${self:provider.stage}

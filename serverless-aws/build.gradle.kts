@@ -78,16 +78,23 @@ tasks {
         file("$projectDir/node_modules").deleteRecursively()
     }
 
-    build.get().dependsOn(ngBuild)
+    build.get().dependsOn(
+        ngBuild,
+        ":front-static:build",
+        ":front-angular:build",
+        ":front-dynamic:build"
+    )
     create("deploy") {
         dependsOn(ngDeploy)
+        dependsOn(":font-static:build")
+        dependsOn(":font-angular:build")
+        dependsOn(":font-dynamic:build")
         group = "build"
     }
 
 }
 
 dependencies {
-//    implementation(project(":proj-common"))
     implementation(project(":front-static", configuration = "serverlessArtifacts"))
     implementation(project(":front-angular", configuration = "serverlessArtifacts"))
     implementation(project(":front-dynamic", configuration = "serverlessArtifacts"))
