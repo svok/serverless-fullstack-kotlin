@@ -4,7 +4,7 @@ Resources:
     Properties:
       DistributionConfig:
         DefaultCacheBehavior:
-          TargetOriginId: 'StaticSiteBucketOrigin'
+          TargetOriginId: StaticSiteBucketOrigin
           ViewerProtocolPolicy: 'redirect-to-https'
           DefaultTTL: 600 # ten minutes
           MaxTTL: 600 # ten minutes
@@ -15,7 +15,21 @@ Resources:
               Forward: 'none'
         CacheBehaviors:
           -
-            TargetOriginId: 'SpaSiteBucketOrigin'
+            TargetOriginId: SpaSiteBucketOrigin
+            AllowedMethods:
+              - GET
+              - HEAD
+            CachedMethods:
+              - HEAD
+              - GET
+            ForwardedValues:
+              QueryString: true
+              Cookies:
+                Forward: none
+            ViewerProtocolPolicy: redirect-to-https
+            PathPattern: spa
+          -
+            TargetOriginId: SpaSiteBucketOrigin
             AllowedMethods:
               - GET
               - HEAD
@@ -73,11 +87,11 @@ Resources:
         Origins:
           -
             Id: 'StaticSiteBucketOrigin'
-            DomainName: { 'Fn::GetAtt': [ 'StaticSiteBucket', 'DomainName' ] }
+            DomainName: { 'Fn::GetAtt': [ 'StaticSiteBucket', 'RegionalDomainName' ] }
             S3OriginConfig: {}
           -
             Id: 'SpaSiteBucketOrigin'
-            DomainName: { 'Fn::GetAtt': [ 'SpaSiteBucket', 'DomainName' ] }
+            DomainName: { 'Fn::GetAtt': [ 'SpaSiteBucket', 'RegionalDomainName' ] }
 #            OriginPath: ""
             S3OriginConfig: {}
           -

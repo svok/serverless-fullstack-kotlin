@@ -42,7 +42,7 @@ tasks {
             "aws",
             "s3",
             "cp",
-            "$buildDir/web-static",
+            "$buildDir/web-spa",
             "s3://$projectStage.$projectDomain-spa/",
             "--recursive",
             "--include", "*"
