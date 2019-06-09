@@ -24,16 +24,8 @@ Resources:
               - GET
             ForwardedValues:
               QueryString: true
-#              Headers:
-#                - Accept
-#                - Referer
-#                - Authorization
-#                - Content-Type
               Cookies:
                 Forward: none
-#                Forward: all
-            MinTTL: '0'
-            DefaultTTL: '0'
             ViewerProtocolPolicy: redirect-to-https
             PathPattern: spa/*
 

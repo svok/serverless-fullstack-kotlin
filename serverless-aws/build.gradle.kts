@@ -18,11 +18,35 @@ tasks {
         from(project(":front-static").configurations.getByName("serverlessArtifacts").artifacts.files)
         into("$buildDir/web-static")
     }
+    val uploadStatic = task<Exec>("uploadStatic") {
+        dependsOn(copyStatic)
+        commandLine = listOf(
+            "aws",
+            "s3",
+            "cp",
+            "$buildDir/web-static",
+            "s3://$projectStage.$projectDomain-static/",
+            "--recursive",
+            "--include", "*"
+        )
+    }
 
-    val copyAngular = task<Sync>("copyAngular") {
+    val copySpa = task<Sync>("copyAngular") {
         dependsOn(copyStatic)
         from(project(":front-angular").configurations.getByName("serverlessArtifacts").artifacts.files)
         into("$buildDir/web-spa")
+    }
+    val uploadSpa = task<Exec>("uploadSpa") {
+        dependsOn(copySpa)
+        commandLine = listOf(
+            "aws",
+            "s3",
+            "cp",
+            "$buildDir/web-static",
+            "s3://$projectStage.$projectDomain-spa/",
+            "--recursive",
+            "--include", "*"
+        )
     }
 
     val jarDynamic = project(":front-dynamic").configurations.getByName("serverlessArtifacts").artifacts.files
@@ -34,7 +58,7 @@ tasks {
     val copyAll = create("copyAll") {
         dependsOn(
             copyStatic,
-            copyAngular,
+            copySpa,
             copyDynamic
         )
     }
@@ -86,9 +110,10 @@ tasks {
     )
     create("deploy") {
         dependsOn(ngDeploy)
-        dependsOn(":font-static:build")
-        dependsOn(":font-angular:build")
-        dependsOn(":font-dynamic:build")
+        dependsOn(":front-static:build")
+        dependsOn(":front-angular:build")
+        dependsOn(":front-dynamic:build")
+        dependsOn(uploadStatic, uploadSpa)
         group = "build"
     }
 

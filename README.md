@@ -42,4 +42,9 @@ To attach some of your web-site versions you need to go to your CloudFront setti
 1. In [Route 53 Hosted Zones](https://console.aws.amazon.com/route53/home?region=us-east-1#hosted-zones:)  
 choose your-domain.com `A` settings and configure it as ALIAS to `v001.your-domain.com`.
 
-Too many steps but this is AWS. 
+## Requirements
+1. Gradle 5.4
+1. To use AWS CLI you need python 2.7 with aws-cli package installed. You can do this with the command:
+```bash
+pip3 install awscli --upgrade --user
+```
