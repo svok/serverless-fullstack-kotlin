@@ -1,0 +1,45 @@
+service: temedis-com
+
+provider:
+  name: aws
+  stage: dev
+  runtime: java8
+#  stage: ${opt:stage}
+  versionFunctions: false
+  region: us-east-1
+
+resources:
+  Resources:
+    ApiGatewayRestApi:
+      Type: AWS::ApiGateway::RestApi
+      Properties:
+        Name: ApiGatewayRestApi
+
+  Outputs:
+    apiGatewayRestApiId:
+      Value:
+        Ref: ApiGatewayRestApi
+      Export:
+        Name: ApiGatewayRestApi-restApiId
+
+    apiGatewayRestApiRootResourceId:
+      Value:
+        Fn::GetAtt:
+          - ApiGatewayRestApi
+          - RootResourceId
+      Export:
+        Name: ApiGatewayRestApi-rootResourceId
+
+#provider:
+#  name: aws
+#  runtime: java8
+#  stage: ${opt:stage}
+#  versionFunctions: false
+#  apiGateway:
+#    restApiId:
+#      'Fn::ImportValue': TemedisComApiGateway-restApiId
+#    restApiRootResourceId:
+#      'Fn::ImportValue': TemedisComApiGateway-rootResourceId
+
+#functions:
+#  service-a-functions

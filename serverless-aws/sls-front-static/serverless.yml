@@ -1,0 +1,79 @@
+service: temedis-com-front-static
+
+provider:
+  name: aws
+  runtime: java8
+  stage: dev
+#  stage: ${opt:stage}
+  versionFunctions: false
+  apiGateway:
+    restApiId:
+      'Fn::ImportValue': ApiGatewayRestApi-restApiId
+    restApiRootResourceId:
+      'Fn::ImportValue': ApiGatewayRestApi-rootResourceId
+
+custom:
+#  siteName: ${opt:domain}
+  siteName: temedis.com
+
+resources:
+  Resources:
+
+    # Formation the bucket for static web-site
+    StaticSiteBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.stage}-${self:custom.siteName}-static
+        #      AccessControl: PublicRead
+        WebsiteConfiguration:
+          IndexDocument: index.html
+          ErrorDocument: error.html
+    StaticSiteBucketPolicy:
+      Type: "AWS::S3::BucketPolicy"
+      Properties:
+        Bucket:
+          Ref: StaticSiteBucket
+        PolicyDocument:
+#            Version: '2012-10-17'
+          Statement:
+            -
+              Sid: StaticSiteBucketPublicAccess
+              Effect: Allow
+              Principal: '*'
+              Action:
+                - s3:GetObject
+              Resource:
+                Fn::Join: ['', [Fn::GetAtt: [ StaticSiteBucket, Arn ], '/*'] ]
+
+    # Api Gateway routing to static web-site
+    RootApiProxyPath:
+      Type: AWS::ApiGateway::Resource
+      Properties:
+        ParentId: ${self:provider.apiGateway.restApiRootResourceId}
+        PathPart: '{proxy+}'
+        RestApiId: ${self:provider.apiGateway.restApiId}
+    RootApiProxyAnyMethod:
+      Type: AWS::ApiGateway::Method
+      Properties:
+        AuthorizationType: NONE
+        HttpMethod: ANY
+        Integration:
+          IntegrationHttpMethod: ANY
+          Type: HTTP_PROXY
+          Uri: !Join [ '/', [ !GetAtt StaticSiteBucket.WebsiteURL, '{proxy}' ] ]
+#          Uri: http://v001m.temedis.com-static.s3-website-us-east-1.amazonaws.com/{proxy}
+          PassthroughBehavior: WHEN_NO_MATCH
+          RequestParameters:
+            'integration.request.path.proxy': 'method.request.path.proxy'
+        MethodResponses:
+          - StatusCode: 200
+        RequestParameters:
+          'method.request.path.proxy': true
+        ResourceId:
+          Ref: RootApiProxyPath
+        RestApiId: ${self:provider.apiGateway.restApiId}
+
+  Outputs:
+    StaticSiteBucketName:
+      Value:
+        Ref: StaticSiteBucket

@@ -1,0 +1,84 @@
+service: temedis-com-front-spa
+
+provider:
+  name: aws
+  runtime: java8
+  stage: dev
+#  stage: ${opt:stage}
+  versionFunctions: false
+  apiGateway:
+    restApiId:
+      'Fn::ImportValue': ApiGatewayRestApi-restApiId
+    restApiRootResourceId:
+      'Fn::ImportValue': ApiGatewayRestApi-rootResourceId
+
+custom:
+  #  siteName: ${opt:domain}
+  siteName: temedis.com
+
+resources:
+  Resources:
+
+    # Bucket formation for SPA web-site
+    SpaSiteBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.stage}-${self:custom.siteName}-spa
+        #      AccessControl: PublicRead
+        WebsiteConfiguration:
+          IndexDocument: index.html
+          ErrorDocument: index.html
+    SpaSiteBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket:
+          Ref: SpaSiteBucket
+        PolicyDocument:
+#            Version: '2012-10-17'
+          Statement:
+            - Sid: SpaSiteBucketPublicAccess
+              Effect: Allow
+              Principal: '*'
+              Action:
+                - s3:GetObject
+              Resource:
+                Fn::Join: ['', [Fn::GetAtt: [ SpaSiteBucket, Arn ], '/*'] ]
+
+    # Api Gateway Routing to SPA web-site
+    SpaApiBasePath:
+      Type: AWS::ApiGateway::Resource
+      Properties:
+        ParentId: ${self:provider.apiGateway.restApiRootResourceId}
+        PathPart: 'spa'
+        RestApiId: ${self:provider.apiGateway.restApiId}
+    SpaApiProxyPath:
+      Type: AWS::ApiGateway::Resource
+      Properties:
+        ParentId:
+          Ref: SpaApiBasePath
+        PathPart: '{proxy+}'
+        RestApiId: ${self:provider.apiGateway.restApiId}
+    SpaApiProxyAnyMethod:
+      Type: AWS::ApiGateway::Method
+      Properties:
+        AuthorizationType: NONE
+        HttpMethod: ANY
+        Integration:
+          IntegrationHttpMethod: ANY
+          Type: HTTP_PROXY
+          Uri: !Join [ '/', [ !GetAtt SpaSiteBucket.WebsiteURL, '{proxy}' ] ]
+          PassthroughBehavior: WHEN_NO_MATCH
+          RequestParameters:
+            'integration.request.path.proxy': 'method.request.path.proxy'
+        MethodResponses:
+          - StatusCode: 200
+        RequestParameters:
+          'method.request.path.proxy': true
+        ResourceId:
+          Ref: SpaApiProxyPath
+        RestApiId: ${self:provider.apiGateway.restApiId}
+
+  Outputs:
+    SpaSiteBucketName:
+      Value:
+        Ref: SpaSiteBucket
