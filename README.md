@@ -29,18 +29,11 @@ After all you can build and deploy your project.
 ```bash
 ./gradlew deploy
 ```
-The last stage of deployment takes about 10-20 minutes for creating CloudFront 
-distribution. Be ready to wait for that.
-
-After deployment is done you can go to the web address: `https://v001.your-domain.com`.
-The prefix v001 is your project stage.
-
-To attach some of your web-site versions you need to go to your CloudFront settings and do following.
-1. Be sure your certificate includes both `v001.your-domain.com` and `your-domain.com`. Check that in your 
-[Certificate Manager](https://console.aws.amazon.com/acm/home?region=us-east-1#/).
-1. In the CloudFront distribution settings add your base domain to Alternate Domain Names (CNAMEs).
-1. In [Route 53 Hosted Zones](https://console.aws.amazon.com/route53/home?region=us-east-1#hosted-zones:)  
-choose your-domain.com `A` settings and configure it as ALIAS to `v001.your-domain.com`.
+This will create an instance of API Gateway with name `v001.your-domain.com`. After that you need to
+manually deploy it. For that go into `v001.your-domain.com` API Gateway. There choose `Resources`,
+select '/' resource and in `Actions` button click `Deploy API`. After deployment is done you get an
+address like `Invoke URL: https://6345dfgdsf.execute-api.us-east-1.amazonaws.com/v001`. Use in 
+either `Custom domain names` or `CloudFront` configuration.   
 
 ## Requirements
 1. Gradle 5.4
