@@ -4,4 +4,4 @@ rootProject.name = "serverless-fullstack"
 include("front-static")
 include("front-angular")
 include("front-dynamic")
-include("serverless")
+include("serverless-aws")
