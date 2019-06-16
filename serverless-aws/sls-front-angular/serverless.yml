@@ -56,6 +56,25 @@ resources:
           Ref: SpaApiBasePath
         PathPart: '{proxy+}'
         RestApiId: ${self:provider.apiGateway.restApiId}
+    SpaApiBaseAnyMethod:
+      Type: AWS::ApiGateway::Method
+      Properties:
+        AuthorizationType: NONE
+        HttpMethod: ANY
+        Integration:
+          IntegrationHttpMethod: ANY
+          Type: HTTP_PROXY
+          Uri: !GetAtt SpaSiteBucket.WebsiteURL
+          PassthroughBehavior: WHEN_NO_MATCH
+          RequestParameters:
+            'integration.request.path.proxy': 'method.request.path.proxy'
+        MethodResponses:
+          - StatusCode: 200
+        RequestParameters:
+          'method.request.path.proxy': true
+        ResourceId:
+          Ref: SpaApiBasePath
+        RestApiId: ${self:provider.apiGateway.restApiId}
     SpaApiProxyAnyMethod:
       Type: AWS::ApiGateway::Method
       Properties:

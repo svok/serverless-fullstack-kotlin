@@ -3,7 +3,6 @@ service: ${opt:service}-static
 provider:
   name: aws
   runtime: java8
-#  stage: dev
   stage: ${opt:stage}
   versionFunctions: false
   apiGateway:
@@ -50,6 +49,24 @@ resources:
       Properties:
         ParentId: ${self:provider.apiGateway.restApiRootResourceId}
         PathPart: '{proxy+}'
+        RestApiId: ${self:provider.apiGateway.restApiId}
+    RootApiBaseAnyMethod:
+      Type: AWS::ApiGateway::Method
+      Properties:
+        AuthorizationType: NONE
+        HttpMethod: ANY
+        Integration:
+          IntegrationHttpMethod: ANY
+          Type: HTTP_PROXY
+          Uri: !GetAtt StaticSiteBucket.WebsiteURL
+          PassthroughBehavior: WHEN_NO_MATCH
+          RequestParameters:
+            'integration.request.path.proxy': 'method.request.path.proxy'
+        MethodResponses:
+          - StatusCode: 200
+        RequestParameters:
+          'method.request.path.proxy': true
+        ResourceId: ${self:provider.apiGateway.restApiRootResourceId}
         RestApiId: ${self:provider.apiGateway.restApiId}
     RootApiProxyAnyMethod:
       Type: AWS::ApiGateway::Method

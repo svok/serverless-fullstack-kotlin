@@ -174,7 +174,8 @@ tasks {
         dependsOn(
             deployBase,
             uploadStatic,
-            uploadSpa
+            uploadSpa,
+            deployDynamic
         )
         group = "build"
     }
