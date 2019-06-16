@@ -12,7 +12,7 @@ provider:
       'Fn::ImportValue': ApiGatewayRestApi-rootResourceId
 
 custom:
-  siteName: ${opt:domain}
+  siteName: ${self:provider.stage}.${opt:domain}
 
 resources:
   Resources:
@@ -21,7 +21,7 @@ resources:
     SpaSiteBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:provider.stage}.${self:custom.siteName}-spa
+        BucketName: ${self:custom.siteName}-spa
         #      AccessControl: PublicRead
         WebsiteConfiguration:
           IndexDocument: index.html

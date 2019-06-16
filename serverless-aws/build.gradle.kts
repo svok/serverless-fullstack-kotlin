@@ -139,6 +139,24 @@ tasks {
         from(jarDynamic)
         into("$buildDir/libs")
     }
+    val deployDynamic = task<YarnTask>("deployDynamic") {
+        val workDir = "$projectDir/sls-front-dynamic"
+        dependsOn("yarn_install", copyDynamic)
+
+        inputs.files(fileTree("node_modules"))
+        inputs.file("$workDir/serverless.yml")
+        inputs.file("$workDir/package.json")
+        setWorkingDir(File(workDir))
+
+        args = listOf(
+            "run", "deploy",
+            "--no-confirm",
+            "--stage", projectStage,
+            "--domain", projectDomain,
+            "--service", projectService,
+            "--jar", jarDynamic.joinToString(",")
+        )
+    }
 
     clean.get().doLast {
         file("$projectDir/dist").deleteRecursively()

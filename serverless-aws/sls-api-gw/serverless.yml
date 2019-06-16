@@ -8,12 +8,15 @@ provider:
   versionFunctions: false
   region: us-east-1
 
+custom:
+  siteName: ${self:provider.stage}.${opt:domain}
+
 resources:
   Resources:
     ApiGatewayRestApi:
       Type: AWS::ApiGateway::RestApi
       Properties:
-        Name: ${opt:domain}
+        Name: ${self:custom.siteName}
 
   Outputs:
     apiGatewayRestApiId:
