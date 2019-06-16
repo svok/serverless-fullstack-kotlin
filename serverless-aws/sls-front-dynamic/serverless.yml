@@ -1,8 +1,9 @@
-service: ${opt:service}-spa
+service: ${opt:service}-dynamic
 
 provider:
   name: aws
   runtime: java8
+#  stage: dev
   stage: ${opt:stage}
   versionFunctions: false
   apiGateway:
@@ -17,46 +18,40 @@ custom:
 resources:
   Resources:
 
-    # Bucket formation for SPA web-site
-    SpaSiteBucket:
+    # Formation the bucket for static web-site
+    StaticSiteBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:provider.stage}.${self:custom.siteName}-spa
+        BucketName: ${self:provider.stage}.${self:custom.siteName}-static
         #      AccessControl: PublicRead
         WebsiteConfiguration:
           IndexDocument: index.html
-          ErrorDocument: index.html
-    SpaSiteBucketPolicy:
-      Type: AWS::S3::BucketPolicy
+          ErrorDocument: error.html
+    StaticSiteBucketPolicy:
+      Type: "AWS::S3::BucketPolicy"
       Properties:
         Bucket:
-          Ref: SpaSiteBucket
+          Ref: StaticSiteBucket
         PolicyDocument:
 #            Version: '2012-10-17'
           Statement:
-            - Sid: SpaSiteBucketPublicAccess
+            -
+              Sid: StaticSiteBucketPublicAccess
               Effect: Allow
               Principal: '*'
               Action:
                 - s3:GetObject
               Resource:
-                Fn::Join: ['', [Fn::GetAtt: [ SpaSiteBucket, Arn ], '/*'] ]
+                Fn::Join: ['', [Fn::GetAtt: [ StaticSiteBucket, Arn ], '/*'] ]
 
-    # Api Gateway Routing to SPA web-site
-    SpaApiBasePath:
+    # Api Gateway routing to static web-site
+    RootApiProxyPath:
       Type: AWS::ApiGateway::Resource
       Properties:
         ParentId: ${self:provider.apiGateway.restApiRootResourceId}
-        PathPart: 'spa'
-        RestApiId: ${self:provider.apiGateway.restApiId}
-    SpaApiProxyPath:
-      Type: AWS::ApiGateway::Resource
-      Properties:
-        ParentId:
-          Ref: SpaApiBasePath
         PathPart: '{proxy+}'
         RestApiId: ${self:provider.apiGateway.restApiId}
-    SpaApiProxyAnyMethod:
+    RootApiProxyAnyMethod:
       Type: AWS::ApiGateway::Method
       Properties:
         AuthorizationType: NONE
@@ -64,7 +59,7 @@ resources:
         Integration:
           IntegrationHttpMethod: ANY
           Type: HTTP_PROXY
-          Uri: !Join [ '/', [ !GetAtt SpaSiteBucket.WebsiteURL, '{proxy}' ] ]
+          Uri: !Join [ '/', [ !GetAtt StaticSiteBucket.WebsiteURL, '{proxy}' ] ]
           PassthroughBehavior: WHEN_NO_MATCH
           RequestParameters:
             'integration.request.path.proxy': 'method.request.path.proxy'
@@ -73,10 +68,10 @@ resources:
         RequestParameters:
           'method.request.path.proxy': true
         ResourceId:
-          Ref: SpaApiProxyPath
+          Ref: RootApiProxyPath
         RestApiId: ${self:provider.apiGateway.restApiId}
 
   Outputs:
-    SpaSiteBucketName:
+    StaticSiteBucketName:
       Value:
-        Ref: SpaSiteBucket
+        Ref: StaticSiteBucket

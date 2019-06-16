@@ -1,10 +1,10 @@
-service: temedis-com-front-static
+service: ${opt:service}-static
 
 provider:
   name: aws
   runtime: java8
-  stage: dev
-#  stage: ${opt:stage}
+#  stage: dev
+  stage: ${opt:stage}
   versionFunctions: false
   apiGateway:
     restApiId:
@@ -13,8 +13,7 @@ provider:
       'Fn::ImportValue': ApiGatewayRestApi-rootResourceId
 
 custom:
-#  siteName: ${opt:domain}
-  siteName: temedis.com
+  siteName: ${opt:domain}
 
 resources:
   Resources:
@@ -23,7 +22,7 @@ resources:
     StaticSiteBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:provider.stage}-${self:custom.siteName}-static
+        BucketName: ${self:provider.stage}.${self:custom.siteName}-static
         #      AccessControl: PublicRead
         WebsiteConfiguration:
           IndexDocument: index.html
@@ -61,7 +60,6 @@ resources:
           IntegrationHttpMethod: ANY
           Type: HTTP_PROXY
           Uri: !Join [ '/', [ !GetAtt StaticSiteBucket.WebsiteURL, '{proxy}' ] ]
-#          Uri: http://v001m.temedis.com-static.s3-website-us-east-1.amazonaws.com/{proxy}
           PassthroughBehavior: WHEN_NO_MATCH
           RequestParameters:
             'integration.request.path.proxy': 'method.request.path.proxy'

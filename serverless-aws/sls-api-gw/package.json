@@ -2,8 +2,7 @@
   "name": "angularfront",
   "scripts": {
     "pack": "serverless package",
-    "deploy": "serverless deploy",
-    "pwd": "pwd"
+    "deploy": "serverless deploy"
   },
   "devDependencies": {
     "serverless": "^1.44.1",
