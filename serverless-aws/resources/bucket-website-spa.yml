@@ -1,0 +1,29 @@
+Resources:
+  SpaSiteBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: ${self:custom.siteName}-spa
+#      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: index.html
+  SpaSiteBucketPolicy:
+    Type: "AWS::S3::BucketPolicy"
+    Properties:
+      Bucket:
+        Ref: SpaSiteBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          -
+            Sid: SpaSiteBucketPublicAccess
+            Effect: Allow
+            Principal: '*'
+            Action:
+              - s3:GetObject
+            Resource:
+              Fn::Join: ['', [Fn::GetAtt: [ SpaSiteBucket, Arn ], '/*'] ]
+Outputs:
+  SpaSiteBucketName:
+    Value:
+      Ref: SpaSiteBucket

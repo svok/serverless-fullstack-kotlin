@@ -1,0 +1,26 @@
+service: ${opt:service}-dynamic
+
+provider:
+  name: aws
+  runtime: java8
+  stage: ${opt:stage}
+  versionFunctions: false
+  apiGateway:
+    restApiId:
+      'Fn::ImportValue': ApiGatewayRestApi-restApiId
+    restApiRootResourceId:
+      'Fn::ImportValue': ApiGatewayRestApi-rootResourceId
+
+custom:
+  siteName: ${self:provider.stage}.${opt:domain}
+
+package:
+  artifact: ${opt:jar}
+
+functions:
+  hello:
+    handler: com.serverless.Handler
+    events:
+      - http:
+          path: api/hello
+          method: get
