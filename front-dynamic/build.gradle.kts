@@ -6,7 +6,7 @@ version = projectVersion
 
 plugins {
     kotlin("jvm")
-    id("io.spring.dependency-management")
+//    id("io.spring.dependency-management")
     id("com.github.johnrengelman.shadow")
 }
 
