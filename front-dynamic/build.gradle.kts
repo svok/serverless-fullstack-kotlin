@@ -6,7 +6,7 @@ version = projectVersion
 
 plugins {
     kotlin("jvm")
-    id("io.spring.dependency-management")
+//    id("io.spring.dependency-management")
     id("com.github.johnrengelman.shadow")
 }
 
@@ -36,6 +36,7 @@ tasks {
 val kotlin_version: String by project
 
 dependencies {
+    implementation(project(":front-common"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version")
 
     implementation("com.amazonaws:aws-lambda-java-core:1.1.0")
