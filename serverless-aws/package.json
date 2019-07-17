@@ -10,6 +10,7 @@
     "serverless-api-cloudfront": "^0.9.5",
     "fullstack-serverless": "^0.6.0",
     "serverless-finch": "^2.4.2",
-    "serverless-s3-sync": "^1.8.0"
+    "serverless-s3-sync": "^1.8.0",
+    "lodash": "~4.17.14"
   }
 }
