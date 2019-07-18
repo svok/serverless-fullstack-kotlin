@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+// import * as AWS from 'aws-sdk';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,11 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'front';
+
+  constructor() {
+    // AWS.config.region = 'us-east-1'; // Region
+    // AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+    //   IdentityPoolId: 'us-east-1:42944c48-1a40-4694-860e-251b2fdaebab',
+    // });
+  }
 }

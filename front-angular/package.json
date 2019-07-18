@@ -24,7 +24,9 @@
     "rxjs": "~6.5.2",
     "tslib": "^1.9.0",
     "lodash": "~4.17.14",
-    "zone.js": "~0.9.1"
+    "zone.js": "~0.9.1",
+    "aws-sdk": "^2.494.0",
+    "amazon-cognito-identity-js": "^3.0.13"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.801.1",
