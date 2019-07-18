@@ -1,8 +1,0 @@
-Resources:
-  LogsBucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: ${self:custom.siteName}-logs
-#    WebsiteConfiguration:
-#      IndexDocument: index.html
-#      ErrorDocument: error.html

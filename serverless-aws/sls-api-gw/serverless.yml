@@ -23,7 +23,7 @@ resources:
       Value:
         Ref: ApiGatewayRestApi
       Export:
-        Name: ApiGatewayRestApi-restApiId
+        Name: ${opt:stage}-ApiGatewayRestApi-restApiId
 
     apiGatewayRestApiRootResourceId:
       Value:
@@ -31,4 +31,4 @@ resources:
           - ApiGatewayRestApi
           - RootResourceId
       Export:
-        Name: ApiGatewayRestApi-rootResourceId
+        Name: ${opt:stage}-ApiGatewayRestApi-rootResourceId

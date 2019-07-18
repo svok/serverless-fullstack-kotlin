@@ -7,9 +7,9 @@ provider:
   versionFunctions: false
   apiGateway:
     restApiId:
-      'Fn::ImportValue': ApiGatewayRestApi-restApiId
+      'Fn::ImportValue': ${opt:stage}-ApiGatewayRestApi-restApiId
     restApiRootResourceId:
-      'Fn::ImportValue': ApiGatewayRestApi-rootResourceId
+      'Fn::ImportValue': ${opt:stage}-ApiGatewayRestApi-rootResourceId
 
 custom:
   siteName: ${self:provider.stage}.${opt:domain}

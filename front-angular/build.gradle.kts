@@ -74,7 +74,7 @@ tasks {
     val conf = project.configurations.create("serverlessArtifacts")
     val setArtifacts = create("setArtifacts") {
         dependsOn(ngBuild)
-        artifacts.add(conf.name, fileTree("dist/front").dir)
+        artifacts.add(conf.name, fileTree("dist/angularfront").dir)
     }
 
     build.get().dependsOn(setArtifacts)

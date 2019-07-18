@@ -6,32 +6,6 @@ plugins {
 }
 
 nodeSetup()
-//data class TaskSettings(
-//    val stage: String = "dev",
-//    val taskName: String = "task",
-//    val srcProject: Project
-//)
-//
-//fun Project.slsTask(settings: TaskSettings) {
-//    this.tasks {
-//        val copyTask = task<Sync>("copy${settings.taskName}") {
-//            from(settings.srcProject.configurations.getByName("serverlessArtifacts").artifacts.files)
-//            into("$buildDir/web-static")
-//        }
-//        val uploadTask = task<Exec>("uploadStatic") {
-//            dependsOn(copyTask)
-//            commandLine = listOf(
-//                "aws",
-//                "s3",
-//                "cp",
-//                "$buildDir/web-static",
-//                "s3://$projectStage.$projectDomain-static/",
-//                "--recursive",
-//                "--include", "*"
-//            )
-//        }
-//    }
-//}
 
 tasks {
 
