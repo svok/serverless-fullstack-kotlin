@@ -22,12 +22,10 @@ export class AwsUtil {
         const url = 'cognito-idp.' + CognitoUtil._REGION.toLowerCase() + '.amazonaws.com/' + CognitoUtil._USER_POOL_ID;
         const logins: Array<string> = [];
         logins[url] = idTokenJwt;
-        const params = {
+        return {
             IdentityPoolId: CognitoUtil._IDENTITY_POOL_ID, /* required */
             Logins: logins
         };
-
-        return params;
     }
 
     /**

@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {UserRegistrationService} from '../../../service/user-registration.service';
 import {UserLoginService} from '../../../service/user-login.service';
@@ -17,7 +17,7 @@ export class NewPasswordUser {
     selector: 'app-awscognito-angular2',
     templateUrl: './newpassword.html'
 })
-export class NewPasswordComponent implements CognitoCallback {
+export class NewPasswordComponent implements CognitoCallback, OnInit {
     registrationUser: NewPasswordUser;
     router: Router;
     errorMessage: string;
