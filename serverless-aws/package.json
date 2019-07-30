@@ -1,16 +1,11 @@
 {
-  "name": "angularfront",
+  "name": "aws-sls-manage",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
-    "pack": "serverless package",
-    "deploy": "serverless deploy",
     "pwd": "pwd"
   },
-  "devDependencies": {
-    "serverless": "^1.44.1",
-    "serverless-api-cloudfront": "^0.9.5",
-    "fullstack-serverless": "^0.6.0",
-    "serverless-finch": "^2.4.2",
-    "serverless-s3-sync": "^1.8.0",
-    "lodash": "~4.17.14"
-  }
+  "workspaces": [
+    "sls-*"
+  ]
 }

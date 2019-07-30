@@ -1,0 +1,34 @@
+service: ${opt:service}
+
+provider:
+  name: aws
+#  stage: dev
+  runtime: java8
+  stage: ${opt:stage}
+  versionFunctions: false
+  region: us-east-1
+
+custom:
+  siteName: ${self:provider.stage}.${opt:domain}
+
+resources:
+  Resources:
+    ApiGatewayRestApi:
+      Type: AWS::ApiGateway::RestApi
+      Properties:
+        Name: ${self:custom.siteName}
+
+  Outputs:
+    apiGatewayRestApiId:
+      Value:
+        Ref: ApiGatewayRestApi
+      Export:
+        Name: ${opt:stage}-ApiGatewayRestApi-restApiId
+
+    apiGatewayRestApiRootResourceId:
+      Value:
+        Fn::GetAtt:
+          - ApiGatewayRestApi
+          - RootResourceId
+      Export:
+        Name: ${opt:stage}-ApiGatewayRestApi-rootResourceId

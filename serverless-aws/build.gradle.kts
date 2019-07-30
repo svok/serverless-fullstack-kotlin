@@ -16,15 +16,16 @@ tasks {
 
     // Basic setup for API Gateway
     val deployBase = task<YarnTask>("deployBase") {
-        val workDir = "$projectDir/sls-api-gw"
+        val workspace = "sls-api-gw"
+        val workDir = "$projectDir/$workspace"
         dependsOn("yarn_install")
 
-        inputs.files(fileTree("node_modules"))
+        inputs.files(fileTree("$workDir/node_modules"))
         inputs.file("$workDir/serverless.yml")
         inputs.file("$workDir/package.json")
-        setWorkingDir(File(workDir))
 
         args = listOf(
+            "workspace", workspace,
             "run", "deploy",
             "--no-confirm",
             "--stage", projectStage,
@@ -39,15 +40,17 @@ tasks {
         into("$buildDir/web-static")
     }
     val deployStatic = task<YarnTask>("deployStatic") {
-        val workDir = "$projectDir/sls-front-static"
+        val workspace = "sls-front-static"
+        val workDir = "$projectDir/$workspace"
         dependsOn("yarn_install", copyStatic)
 
-        inputs.files(fileTree("node_modules"))
+        inputs.files(fileTree("$workDir/node_modules"))
         inputs.file("$workDir/serverless.yml")
         inputs.file("$workDir/package.json")
         setWorkingDir(File(workDir))
 
         args = listOf(
+            "workspace", workspace,
             "run", "deploy",
             "--no-confirm",
             "--stage", projectStage,
@@ -76,15 +79,16 @@ tasks {
         into("$buildDir/web-spa")
     }
     val deploySpa = task<YarnTask>("deploySpa") {
-        val workDir = "$projectDir/sls-front-angular"
+        val workspace = "sls-front-angular"
+        val workDir = "$projectDir/$workspace"
         dependsOn("yarn_install", copySpa)
 
-        inputs.files(fileTree("node_modules"))
+        inputs.files(fileTree("$workDir/node_modules"))
         inputs.file("$workDir/serverless.yml")
         inputs.file("$workDir/package.json")
-        setWorkingDir(File(workDir))
 
         args = listOf(
+            "workspace", workspace,
             "run", "deploy",
             "--no-confirm",
             "--stage", projectStage,
@@ -114,15 +118,16 @@ tasks {
         into("$buildDir/libs")
     }
     val deployDynamic = task<YarnTask>("deployDynamic") {
-        val workDir = "$projectDir/sls-front-dynamic"
+        val workspace = "sls-front-dynamic"
+        val workDir = "$projectDir/$workspace"
         dependsOn("yarn_install", copyDynamic)
 
-        inputs.files(fileTree("node_modules"))
+        inputs.files(fileTree("$workDir/node_modules"))
         inputs.file("$workDir/serverless.yml")
         inputs.file("$workDir/package.json")
-        setWorkingDir(File(workDir))
 
         args = listOf(
+            "workspace", workspace,
             "run", "deploy",
             "--no-confirm",
             "--stage", projectStage,
