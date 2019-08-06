@@ -12,7 +12,7 @@ fun Project.nodeSetup() {
     }
 
     extensions.configure(NodeExtension::class) {
-        yarnVersion = yarn_version
+//        yarnVersion = yarn_version
         download = true
         workDir = file("${rootProject.buildDir}/node")
         npmWorkDir = file("${rootProject.buildDir}/node")

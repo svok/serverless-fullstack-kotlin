@@ -1,0 +1,15 @@
+<%
+var data = {
+title: "Заголовок | Проект",
+author: "Harrix"
+};
+var header = require('html-loader!./../includes/header.html');
+var footer = require('html-loader!./../includes/footer.html');
+%><%= _.template(header)(data) %>
+
+<div class="container">
+    <p>Первая страница.</p>
+    <p><img src="img/test.png"></p>
+</div>
+
+<%= _.template(footer)(data) %>
