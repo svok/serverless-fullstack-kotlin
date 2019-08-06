@@ -21,10 +21,13 @@
     "@angular/platform-browser": "~8.1.1",
     "@angular/platform-browser-dynamic": "~8.1.1",
     "@angular/router": "~8.1.1",
+    "@types/node": "~12.6.8",
     "rxjs": "~6.5.2",
     "tslib": "^1.9.0",
     "lodash": "~4.17.14",
-    "zone.js": "~0.9.1"
+    "zone.js": "~0.9.1",
+    "aws-sdk": "^2.494.0",
+    "amazon-cognito-identity-js": "^3.0.13"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.801.1",
@@ -33,7 +36,6 @@
     "@angular/language-service": "~8.1.1",
     "@types/jasmine": "~3.3.8",
     "@types/jasminewd2": "~2.0.3",
-    "@types/node": "~8.9.4",
     "codelyzer": "^5.0.0",
     "jasmine-core": "~3.4.0",
     "jasmine-spec-reporter": "~4.2.1",

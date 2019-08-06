@@ -3,6 +3,8 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 
 fun Project.nodeSetup() {
+    val yarn_version = "1.16.0"
+
     plugins.apply {
         apply(com.moowork.gradle.node.NodePlugin::class.java)
         apply(org.jetbrains.kotlin.gradle.plugin.KotlinPlatformJsPlugin::class.java)
@@ -10,6 +12,7 @@ fun Project.nodeSetup() {
     }
 
     extensions.configure(NodeExtension::class) {
+        yarnVersion = yarn_version
         download = true
         workDir = file("${rootProject.buildDir}/node")
         npmWorkDir = file("${rootProject.buildDir}/node")

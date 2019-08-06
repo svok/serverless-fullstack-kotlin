@@ -3,7 +3,20 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+    production: false,
+    ddbTableName: 'users_table',
+    sts_endpoint: 'sts_endpoint',
+    identityPoolId: 'sdf',
+    dynamodb_endpoint: 'dynamodb_endpoint',
+    userPoolId: 'us-east-1_DC0YQH2jn',
+    clientId: '49tktmcpqgs8ge7dmdo9cq44kp',
+    cognito_idp_endpoint: 'cognito_idp_endpoint',
+    cognito_identity_endpoint: 'cognito_identity_endpoint',
+    region: 'us-east-1',
+    bucketRegion: 'bubketRegion',
+    rekognitionBucket: 'rekognitionBucket',
+    s3_endpoint: 's3_endpoint',
+    albumName: 'albumName'
 };
 
 /*
