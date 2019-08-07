@@ -25,22 +25,23 @@ module.exports = {
     // Example setup for your project:
     // The entry module that requires or imports the rest of your project.
     // Must start with `./`!
-    entry: [
-        './src/js/index.js',
-        './src/scss/style.scss'
-    ],
+    entry: {
+        main: './src/js/index.js',
+        login: './src/js/login.js',
+        styles: './src/scss/style.scss'
+    },
     // Place output files in `./dist/my-app.js`
     output: {
         path: __dirname + '/build/web',
-        filename: 'js/bundle.js'
+        filename: 'js/[name]-bundle.js'
     },
     devtool: "source-map",
     module: {
         rules: [
-            {
-                test: /\.json$/,
-                loader: 'json-loader'
-            },
+            // {
+            //     test: /\.json$/,
+            //     loader: 'json-loader'
+            // },
             {
                 test: /\.js$/,
                 include: path.resolve(__dirname, 'src/js'),
@@ -79,10 +80,10 @@ module.exports = {
             filename: devMode ? '[name].css' : '[name].[hash].css',
             chunkFilename: devMode ? '[id].css' : '[id].[hash].css',
         }),
-        new ExtractTextPlugin({
-            filename: './css/style.bundle.css',
-            allChunks: true,
-        }),
+        // new ExtractTextPlugin({
+        //     filename: './css/style.bundle.css',
+        //     allChunks: true,
+        // }),
         new CopyWebpackPlugin([{
             from: './src/fonts',
             to: './fonts'

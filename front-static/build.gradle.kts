@@ -7,8 +7,32 @@ val projectMode: String by project
 tasks {
     val buildWeb = "$buildDir/web"
 
+    val createConfig = create("createConfig") {
+        val awsUserPoolId: String by project
+        val awsRegion: String by project
+        val awsClientId: String by project
+        val text = """
+            window._config = {
+                cognito: {
+                    userPoolId: '$awsUserPoolId',
+                    region: '$awsRegion',
+                    clientId: '$awsClientId'
+                },
+            };
+        """.trimIndent()
+        val file = File("$projectDir/src/js/config.js")
+        file
+            .outputStream()
+            .writer()
+            .apply {
+                write(text)
+                close()
+            }
+    }
+
     val constructArchive = task<YarnTask>("constructArchive") {
         dependsOn("yarn_install")
+        dependsOn(createConfig)
 
         inputs.files(fileTree("node_modules"))
         inputs.files(fileTree("src"))
