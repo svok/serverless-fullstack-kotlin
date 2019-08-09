@@ -47,7 +47,7 @@ tasks {
         inputs.files(fileTree("$workDir/node_modules"))
         inputs.file("$workDir/serverless.yml")
         inputs.file("$workDir/package.json")
-        setWorkingDir(File(workDir))
+//        setWorkingDir(File(workDir))
 
         args = listOf(
             "workspace", workspace,

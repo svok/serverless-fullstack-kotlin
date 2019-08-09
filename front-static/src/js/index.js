@@ -4,8 +4,6 @@ window.$ = $;
 
 import popper from 'popper.js';
 import bootstrap from 'bootstrap';
+import * as config from './config';
 
-
-jQuery(function() {
-    jQuery('body').css('color', 'blue');
-});
+window.AmazonCognitoIdentity = require('amazon-cognito-identity-js');

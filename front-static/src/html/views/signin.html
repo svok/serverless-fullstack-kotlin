@@ -1,0 +1,61 @@
+<%
+var data = {
+title: "Sign in",
+author: "svok"
+};
+var header = require('html-loader!./../includes/header.html');
+var footer = require('html-loader!./../includes/footer.html');
+%><%= _.template(header)(data) %>
+
+<div class="container">
+    <h1>Please sign in</h1>
+
+    <p><a href="./signup.html">Register</a></p>
+
+    <form>
+        <div class="form-group">
+            <label for="inputUsername">Email</label>
+            <input type="text" id="inputUsername" class="form-control" placeholder="your@email.dom" name="username" required autofocus>
+        </div>
+        <div class="form-group">
+            <label for="inputPassword">Password</label>
+            <input type="password" id="inputPassword" class="form-control" placeholder="*****" name="password" required>
+        </div>
+        <button id="mainbutton" class="btn btn-lg btn-primary btn-block" type="button" onclick="signInButton()">Sign in</button>
+    </form>
+
+
+    <script>
+        function signInButton() {
+
+            const email = $("#inputUsername").val();
+
+            var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails({
+                Username: email,
+                Password: $("#inputPassword").val(),
+            });
+
+            var userPool = new AmazonCognitoIdentity.CognitoUserPool({
+                UserPoolId: _config.cognito.userPoolId, // Your user pool id here
+                ClientId: _config.cognito.clientId, // Your client id here
+            });
+
+            var cognitoUser = new AmazonCognitoIdentity.CognitoUser({
+                Username: email,
+                Pool: userPool,
+            });
+
+            cognitoUser.authenticateUser(authenticationDetails, {
+                onSuccess: function (result) {
+                    var accessToken = result.getAccessToken().getJwtToken();
+                    console.log(accessToken);
+                },
+                onFailure: function (err) {
+                    alert(err.message || JSON.stringify(err));
+                },
+            });
+        }
+    </script>
+</div>
+
+<%= _.template(footer)(data) %>

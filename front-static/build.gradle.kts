@@ -44,18 +44,6 @@ tasks {
         )
     }
 
-//    val constructArchive = task<Copy>("constructArchive") {
-//        dependsOn("yarn_install")
-//        from(projectDir)
-//        exclude(
-//            ".*",
-//            "build",
-//            "build.gradle.kts",
-//            "package.json"
-//        )
-//        into(buildWeb)
-//    }
-//
     val conf = project.configurations.create("serverlessArtifacts")
     val setArtifacts = create("setArtifacts") {
         dependsOn(constructArchive)

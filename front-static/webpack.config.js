@@ -27,7 +27,6 @@ module.exports = {
     // Must start with `./`!
     entry: {
         main: './src/js/index.js',
-        login: './src/js/login.js',
         styles: './src/scss/style.scss'
     },
     // Place output files in `./dist/my-app.js`
