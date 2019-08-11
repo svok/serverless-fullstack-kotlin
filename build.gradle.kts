@@ -39,6 +39,7 @@ subprojects {
 
 tasks {
     create("clean") {
+        group = "build"
         file("$projectDir/dist").deleteRecursively()
         file(buildDir).deleteRecursively()
         file("$projectDir/node_modules").deleteRecursively()
