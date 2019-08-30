@@ -5,6 +5,7 @@
     "pack": "serverless package",
     "deploy": "serverless deploy",
     "ng": "ng",
+    "upgrade": "ng update @angular/cli @angular/core",
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
