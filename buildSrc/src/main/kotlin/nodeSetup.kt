@@ -3,7 +3,7 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 
 fun Project.nodeSetup() {
-    val yarn_version = "1.16.0"
+    val yarn_version = property("yarn_version") as String
 
     plugins.apply {
         apply(com.moowork.gradle.node.NodePlugin::class.java)

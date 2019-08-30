@@ -7,6 +7,7 @@ plugins {
 }
 
 nodeSetup()
+
 tasks {
 
     withType<Jar> {

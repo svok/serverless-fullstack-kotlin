@@ -1,0 +1,128 @@
+<%
+var data = {
+title: "Sign in",
+author: "svok"
+};
+var header = require('html-loader!./../includes/header.html');
+var footer = require('html-loader!./../includes/footer.html');
+%><%= _.template(header)(data) %>
+
+<div class="container">
+    <h1 class="h3 mb-3 font-weight-normal" id="titleheader">Register an Account</h1>
+
+    <p><a href="./signin.html">Login</a></p>
+
+    <form>
+        <div class="alert alert-danger" role="alert" id="signup-alert" style="display: none"></div>
+        <div id="alert-place" style="display: none"></div>
+        <div class="form-group">
+            <label for="firstNameRegister">Name</label>
+            <input type="text"
+                   class="form-control"
+                   id="firstNameRegister"
+                   placeholder="Piter"
+                   pattern=".*"
+                   autocapitalize="word"
+                   required>
+        </div>
+        <div class="form-group">
+            <label for="lastNameRegister">Name</label>
+            <input type="text"
+                   class="form-control"
+                   id="lastNameRegister"
+                   placeholder="Piter"
+                   pattern=".*"
+                   autocapitalize="word"
+                   required>
+        </div>
+        <div class="form-group">
+            <label for="emailInputRegister">Email</label>
+            <input type="email"
+                   class="form-control"
+                   id="emailInputRegister"
+                   placeholder="your@email.dom"
+                   pattern=".*"
+                   required>
+        </div>
+        <div class="form-group">
+            <label for="passwordInputRegister">Password</label>
+            <input type="password" class="form-control" id="passwordInputRegister" placeholder="******" pattern=".*"
+                   required>
+        </div>
+        <div class="form-group">
+            <label for="confirmationpassword">Confirm Password</label>
+            <input type="password" class="form-control" id="confirmationpassword" placeholder="******"
+                   pattern=".*" required>
+        </div>
+        <button id="mainbutton" class="btn btn-lg btn-primary btn-block" type="button" onclick="registerButton()">
+            Register
+        </button>
+
+    </form>
+
+    <script>
+        function registerButton() {
+
+            const username = $("#emailInputRegister").val();
+            const password1 = $("#passwordInputRegister").val();
+            const password2 = $("#confirmationpassword").val();
+            let password;
+
+            if (password1 !== password2) {
+                alert("Passwords Do Not Match!");
+                throw "Passwords Do Not Match!"
+            } else {
+                password = document.getElementById("passwordInputRegister").value;
+            }
+
+            const userPool = new AmazonCognitoIdentity.CognitoUserPool({
+                UserPoolId: _config.cognito.userPoolId, // Your user pool id here
+                ClientId: _config.cognito.clientId // Your client id here
+            });
+
+            const attributeList = [
+                new AmazonCognitoIdentity.CognitoUserAttribute({
+                    Name: 'email',
+                    Value: username,
+                }),
+                new AmazonCognitoIdentity.CognitoUserAttribute({
+                    Name: 'family_name',
+                    Value: $("#firstNameRegister").val(),
+                }),
+                new AmazonCognitoIdentity.CognitoUserAttribute({
+                    Name: 'given_name',
+                    Value: $("#lastNameRegister").val(),
+                }),
+            ];
+
+            userPool.signUp(username, password, attributeList, null, function (err, result) {
+                if (err) {
+                    const id = "signup-alert";
+                    const target = $("#alert-place");
+                    const content = err.message || JSON.stringify(err);
+                    console.error(err);
+                    const alert = $("#" + id);
+                    alert
+                        .show()
+                        .text(content)
+                        .slideDown('500', function () {
+                            setTimeout(function () {
+                                alert.slideUp(500, function () {
+                                    $(this).hide();
+                                    $(this).text("")
+                                });
+                            }, 10000);
+                        });
+                    return;
+                }
+                cognitoUser = result.user;
+                console.log('user name is ' + cognitoUser.getUsername());
+                //change elements of page
+                document.getElementById("titleheader").innerHTML = "Check your email for a verification link";
+
+            });
+        }
+    </script>
+</div>
+
+<%= _.template(footer)(data) %>

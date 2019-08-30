@@ -1,0 +1,19 @@
+<%
+var data = {
+title: "",
+author: "svok"
+};
+var header = require('html-loader!./../includes/header.html');
+var footer = require('html-loader!./../includes/footer.html');
+%><%= _.template(header)(data) %>
+
+<div class="container">
+    <p>Main page</p>
+    <p><img src="img/test.png"></p>
+    <p><a href="./signin.html">Sign in</a></p>
+    <p><a href="./signup.html">Sign up</a></p>
+    <p><a href="./spa">Single page application</a></p>
+    <p><a href="./api/hello">Dynamic page Hello</a></p>
+</div>
+
+<%= _.template(footer)(data) %>
