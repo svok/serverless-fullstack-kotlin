@@ -26,6 +26,7 @@
     "amazon-cognito-identity-js": "^3.0.13",
     "aws-sdk": "^2.494.0",
     "lodash": "~4.17.14",
+    "mixin-deep": "^2.0.1",
     "rxjs": "~6.5.2",
     "set-value": "^3.0.1",
     "tslib": "^1.9.0",
