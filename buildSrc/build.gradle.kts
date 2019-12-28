@@ -12,7 +12,7 @@ dependencies {
         implementation(kotlin("stdlib-jdk8"))
         implementation("com.moowork.gradle:gradle-node-plugin:1.3.1")
         implementation("com.crowdproj.plugins:jar2npm-plugin:1.0.1")
-        implementation(kotlin("gradle-plugin"))
+        implementation(kotlin("gradle-plugin", "1.3.61"))
 
 //        testImplementation(kotlin("test"))
 //        testImplementation(gradleTestKit())

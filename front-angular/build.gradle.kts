@@ -29,6 +29,12 @@ tasks {
         args = listOf("run", "build", "--base-href", "/spa/")
     }
 
+    task<YarnTask>("ngUpgrade") {
+        dependsOn(yarnSetup)
+
+        args = listOf("upgrade")
+    }
+
     val webdriverUpdate = register("webdriverUpdate", YarnTask::class) {
         args = listOf("run", "update-driver")
     }

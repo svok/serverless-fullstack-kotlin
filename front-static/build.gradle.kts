@@ -30,6 +30,11 @@ tasks {
             }
     }
 
+    task<YarnTask>("ngUpgrade") {
+        dependsOn("yarnSetup")
+        args = listOf("upgrade")
+    }
+
     val constructArchive = task<YarnTask>("constructArchive") {
         dependsOn("yarn_install")
         dependsOn(createConfig)
