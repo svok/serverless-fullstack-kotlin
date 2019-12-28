@@ -11,9 +11,15 @@ import {CognitoUtil} from './service/cognito.service';
 })
 export class AppComponent implements OnInit {
   title = 'front';
+  cntr = 0;
 
   constructor(public awsUtil: AwsUtil, public userService: UserLoginService, public cognito: CognitoUtil) {
     console.log('AppComponent: constructor');
+  }
+
+  titleChange() {
+    this.cntr++;
+    this.title = `my new title ${this.cntr}`;
   }
 
   ngOnInit() {
