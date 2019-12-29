@@ -31,7 +31,7 @@ tasks {
     }
 
     task<YarnTask>("ngUpgrade") {
-        dependsOn("yarnSetup")
+        dependsOn("yarn_install")
         args = listOf("upgrade")
     }
 
